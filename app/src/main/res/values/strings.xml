@@ -146,24 +146,24 @@
     <string name="company_name">Company Name</string>
     <string name="view_details"><![CDATA[View Details >]]></string>
     <string name="posted_on">Posted on</string>
-    <string name="your_category">YOUR CATEGORY *</string>
-    <string name="your_religion">YOUR RELIGION *</string>
+    <string name="your_category">YOUR CATEGORY</string>
+    <string name="your_religion">YOUR RELIGION</string>
     <string name="your_educational_status">YOUR EDUCATIONAL STATUS</string>
-    <string name="your_marital_status">YOUR MARITAL STATUS *</string>
+    <string name="your_marital_status">YOUR MARITAL STATUS</string>
     <string name="number_of_children">NUMBER OF CHILDREN *</string>
     <string name="number_of_children_below_6_yrs">NUMBER OF CHILDREN BELOW 6 YRS. *</string>
     <string name="number_of_children_b_w_6_14_yrs">NUMBER OF CHILDREN B/W 6-14 YRS. *</string>
     <string name="number_of_children_b_w_15_18_yrs">NUMBER OF CHILDREN B/W 15-18 YRS. *</string>
     <string name="number_of_children_going_to_school">NUMBER OF CHILDREN GOING TO SCHOOL *</string>
     <string name="your_sector">YOUR SECTOR *</string>
-    <string name="your_skills">YOUR SKILLS *</string>
-    <string name="your_experience">YOUR EXPERIENCE *</string>
-    <string name="your_employment_status">YOUR EMPLOYMENT STATUS *</string>
+    <string name="your_skills">YOUR SKILLS</string>
+    <string name="your_experience">YOUR EXPERIENCE</string>
+    <string name="your_employment_status">YOUR EMPLOYMENT STATUS</string>
     <string name="your_employer_previous_current">YOUR EMPLOYER (PREVIOUS/ CURRENT)</string>
     <string name="owns_a_home_based_unit1">OWNS A HOME BASED UNIT *</string>
     <string name="number_of_workers">NUMBER OF WORKERS *</string>
     <string name="number_of_looms">PRODUCTION MACHINARIES / TOOLS *</string>
-    <string name="preferred_location_for_work">PREFERRED LOCATION FOR WORK *</string>
+    <string name="preferred_location_for_work">PREFERRED LOCATION FOR WORK</string>
     <string name="are_you_sure_you_want_to_log_out">Are you sure you want to log out?</string>
     <string name="yes">YES</string>
     <string name="cancel">CANCEL</string>
@@ -190,5 +190,8 @@
     <string name="close">Close &amp; Terminate</string>
     <string name="proof">PROOF OF IDENTITY</string>
     <string name="approve">APPROVE</string>
+    <string name="firm">TYPE OF FIRM</string>
+    <string name="firmtype">TYPE OF FIRM REGISTRATION</string>
+    <string name="reg_number">REGISTRATION No. (IF ANY)</string>
 
 </resources>

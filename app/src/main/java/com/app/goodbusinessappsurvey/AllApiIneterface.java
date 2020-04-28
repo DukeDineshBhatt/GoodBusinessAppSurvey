@@ -1,5 +1,8 @@
 package com.app.goodbusinessappsurvey;
 
+import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
+import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
+import com.app.goodbusinessappsurvey.samplePOJO.sampleBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 
 import okhttp3.MultipartBody;
@@ -41,6 +44,12 @@ public interface AllApiIneterface {
     );
 
     @Multipart
+    @POST("roshni/api/getSkills.php")
+    Call<skillsBean> getSkills1(
+            @Part("sector_id") String sector_id
+    );
+
+    @Multipart
     @POST("roshni/api/update_worker_professional2.php")
     Call<verifyBean> updateWorkerProfessional(
             @Part("survey_id") String user_id,
@@ -53,6 +62,41 @@ public interface AllApiIneterface {
             @Part("workers") String workers,
             @Part("tools") String tools,
             @Part("location") String location
+    );
+
+    @Multipart
+    @POST("roshni/api/getContractorById.php")
+    Call<contractorBean> getContractorById(
+            @Part("id") String id
+    );
+
+    @Multipart
+    @POST("roshni/api/uploadSample.php")
+    Call<sampleBean> uploadSample(
+            @Part("user_id") String user_id,
+            @Part MultipartBody.Part file1
+    );
+
+    @Multipart
+    @POST("roshni/api/getSamples.php")
+    Call<sampleBean> getSamples(
+            @Part("user_id") String user_id
+    );
+
+    @Multipart
+    @POST("roshni/api/update_worker_professional3.php")
+    Call<verifyBean> rejectWorkerProfessional(
+            @Part("survey_id") String user_id,
+            @Part("sector") String sector,
+            @Part("skills") String skills,
+            @Part("experience") String experience,
+            @Part("employment") String employment,
+            @Part("employer") String employer,
+            @Part("home") String home,
+            @Part("workers") String workers,
+            @Part("tools") String tools,
+            @Part("location") String location,
+            @Part("reason") String reason
     );
 
     @GET("roshni/api/getSectors.php")
@@ -95,6 +139,45 @@ public interface AllApiIneterface {
             @Part("sixtofourteen") String sixtofourteen,
             @Part("fifteentoeighteen") String fifteentoeighteen,
             @Part("goingtoschool") String goingtoschool,
+            @Part MultipartBody.Part file1
+    );
+
+
+    @Multipart
+    @POST("roshni/api/update_contractor.php")
+    Call<verifyBean> update_contractor(
+            @Part("user_id") String user_id,
+            @Part("name") String name,
+            @Part("id_proof") String id_proof,
+            @Part("id_number") String id_number,
+            @Part("firm_type") String firm_type,
+            @Part("firm_registration_type") String firm_registration_type,
+            @Part("registration_no") String registration_no,
+            @Part("lat") String lat,
+            @Part("lng") String lng,
+            @Part("dob") String dob,
+            @Part("gender") String gender,
+            @Part("business_name") String business_name,
+            @Part("establishment_year") String establishment_year,
+            @Part("cpin") String cpin,
+            @Part("cstate") String cstate,
+            @Part("cdistrict") String cdistrict,
+            @Part("carea") String carea,
+            @Part("cstreet") String cstreet,
+            @Part("ppin") String ppin,
+            @Part("pstate") String pstate,
+            @Part("pdistrict") String pdistrict,
+            @Part("parea") String parea,
+            @Part("pstreet") String pstreet,
+            @Part("home_units") String home_units,
+            @Part("home_location") String home_location,
+            @Part("workers_male") String workers_male,
+            @Part("workers_female") String workers_female,
+            @Part("experience") String experience,
+            @Part("work_type") String work_type,
+            @Part("availability") String availability,
+            @Part("employer") String employer,
+            @Part("about") String about,
             @Part MultipartBody.Part file1
     );
 

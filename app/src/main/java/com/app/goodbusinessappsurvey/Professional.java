@@ -1,5 +1,8 @@
 package com.app.goodbusinessappsurvey;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 
 import java.util.ArrayList;
@@ -43,10 +47,11 @@ public class Professional extends Fragment {
     ProgressBar progress;
 
     EditText employer;
-    String id,profile_id;
+    String id, profile_id;
+    boolean loc_bool = false;
 
-    Button reject,approve;
-
+    Button reject, approve;
+    EditText editTxtLoc;
     LinearLayout yes;
 
     @Nullable
@@ -79,6 +84,7 @@ public class Professional extends Fragment {
         reject = view.findViewById(R.id.reject);
         approve = view.findViewById(R.id.approve);
         yes = view.findViewById(R.id.yes);
+        editTxtLoc = view.findViewById(R.id.editTxtLoc);
 
         id = SharePreferenceUtils.getInstance().getString("user_id");
         profile_id = SharePreferenceUtils.getInstance().getString("profile_id");
@@ -139,42 +145,6 @@ public class Professional extends Fragment {
         workers.setAdapter(adapter5);
         looms.setAdapter(adapter5);
 
-
-        sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i > 0) {
-                    sect = sec1.get(i - 1);
-                } else {
-                    sect = "";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        skills.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i > 0) {
-                    skil = ski1.get(i - 1);
-                } else {
-                    skil = "";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         experience.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -282,10 +252,20 @@ public class Professional extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
-                    loca = loc1.get(i - 1);
+                loca = loc.get(i);
+
+                if (i == 5) {
+
+                    loc_bool = true;
+
+                    editTxtLoc.setVisibility(View.VISIBLE);
+
+
                 } else {
-                    loca = "";
+
+                    loc_bool = false;
+                    editTxtLoc.setVisibility(View.GONE);
+
                 }
 
             }
@@ -298,160 +278,16 @@ public class Professional extends Fragment {
 
         progress.setVisibility(View.VISIBLE);
 
-        Bean b = (Bean) getContext().getApplicationContext();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(b.baseurl)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
-
-        Call<sectorBean> call = cr.getSectors();
-
-        call.enqueue(new Callback<sectorBean>() {
-            @Override
-            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
-
-                if (response.body().getStatus().equals("1")) {
-
-                    sec.add("Select one --- ");
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-
-                        sec.add(response.body().getData().get(i).getTitle());
-                        sec1.add(response.body().getData().get(i).getId());
-
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                            R.layout.spinner_model, sec);
-
-                    sector.setAdapter(adapter);
-
-                    Log.d("sec", SharePreferenceUtils.getInstance().getString("sector"));
-
-                    int gp = 0;
-                    for (int i = 0; i < sec1.size(); i++) {
-                        if (SharePreferenceUtils.getInstance().getString("sector").equals(sec1.get(i))) {
-                            gp = i;
-                        }
-                    }
-
-                    sector.setSelection(gp + 1);
-
-                }
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<sectorBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
-            }
-        });
-
-        Call<sectorBean> call2 = cr.getSkills();
-
-        call2.enqueue(new Callback<sectorBean>() {
-            @Override
-            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
-
-                if (response.body().getStatus().equals("1")) {
-
-                    ski.add("Select one --- ");
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-
-                        ski.add(response.body().getData().get(i).getTitle());
-                        ski1.add(response.body().getData().get(i).getId());
-
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                            R.layout.spinner_model, ski);
-
-                    skills.setAdapter(adapter);
-
-                    Log.d("sec", SharePreferenceUtils.getInstance().getString("skills"));
-
-                    int gp = 0;
-                    for (int i = 0; i < ski1.size(); i++) {
-                        if (SharePreferenceUtils.getInstance().getString("skills").equals(ski1.get(i))) {
-                            gp = i;
-                        }
-                    }
-
-                    skills.setSelection(gp + 1);
-
-                }
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<sectorBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
-            }
-        });
-
-
-        Call<sectorBean> call3 = cr.getLocations();
-
-        call3.enqueue(new Callback<sectorBean>() {
-            @Override
-            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
-
-
-                if (response.body().getStatus().equals("1")) {
-
-                    loc.add("Select one --- ");
-
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-
-                        loc.add(response.body().getData().get(i).getTitle());
-                        loc1.add(response.body().getData().get(i).getId());
-
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                            R.layout.spinner_model, loc);
-
-                    location.setAdapter(adapter);
-
-                    Log.d("sec", SharePreferenceUtils.getInstance().getString("location"));
-
-                    int gp = 0;
-                    for (int i = 0; i < loc1.size(); i++) {
-                        if (SharePreferenceUtils.getInstance().getString("location").equals(loc1.get(i))) {
-                            gp = i;
-                        }
-                    }
-
-
-                    location.setSelection(gp + 1);
-
-                }
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<sectorBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
-            }
-        });
-
         approve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String emplo = employer.getText().toString();
+
+                if (loc_bool) {
+
+                    loca = editTxtLoc.getText().toString();
+                }
 
                 if (sect.length() > 0) {
 
@@ -464,7 +300,7 @@ public class Professional extends Fragment {
                                             if (loca.length() > 0) {
 
 
-                                               progress.setVisibility(View.VISIBLE);
+                                                progress.setVisibility(View.VISIBLE);
 
                                                 Bean b = (Bean) getContext().getApplicationContext();
 
@@ -546,23 +382,318 @@ public class Professional extends Fragment {
 
             }
         });
-        setPrevious();
+
+
+        reject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                forceOpen();
+
+                progress.setVisibility(View.GONE);
+
+
+            }
+        });
+
 
         return view;
     }
 
+    public void forceOpen() {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+        alert.setTitle("Reason for rejecting this profile?");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(getContext());
+        input.setHint("tab to enter");
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                String value = input.getText().toString();
+
+                if (value != null) {
+                    // Do something with value
+
+                    progress.setVisibility(View.VISIBLE);
+
+
+                    String emplo = employer.getText().toString();
+
+                    if (loc_bool) {
+
+                        loca = editTxtLoc.getText().toString();
+                    }
+
+                    if (sect.length() > 0) {
+                        if (skil.length() > 0) {
+                            if (expe.length() > 0) {
+                                if (empl.length() > 0) {
+                                    if (hhom.length() > 0) {
+                                        if (work.length() > 0) {
+                                            if (loom.length() > 0) {
+                                                if (loca.length() > 0) {
+
+                                                    progress.setVisibility(View.VISIBLE);
+
+                                                    Bean b = (Bean) getContext().getApplicationContext();
+
+                                                    Retrofit retrofit = new Retrofit.Builder()
+                                                            .baseUrl(b.baseurl)
+                                                            .addConverterFactory(ScalarsConverterFactory.create())
+                                                            .addConverterFactory(GsonConverterFactory.create())
+                                                            .build();
+
+                                                    AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                                                    Call<verifyBean> call = cr.rejectWorkerProfessional(
+                                                            profile_id,
+                                                            sect,
+                                                            skil,
+                                                            expe,
+                                                            empl,
+                                                            emplo,
+                                                            hhom,
+                                                            work,
+                                                            loom,
+                                                            loca,
+                                                            value
+                                                    );
+
+                                                    call.enqueue(new Callback<verifyBean>() {
+                                                        @Override
+                                                        public void onResponse(Call<verifyBean> call, Response<verifyBean> response) {
+
+                                                            if (response.body().getStatus().equals("1")) {
+                                                                Data item = response.body().getData();
+
+                                                                Intent intent = new Intent(getContext(), Profile.class);
+                                                                startActivity(intent);
+                                                                getActivity().finish();
+
+
+                                                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                            }
+
+
+                                                            progress.setVisibility(View.GONE);
+
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(Call<verifyBean> call, Throwable t) {
+                                                            progress.setVisibility(View.GONE);
+                                                        }
+                                                    });
+
+                                                } else {
+                                                    Toast.makeText(getContext(), "Invalid location", Toast.LENGTH_SHORT).show();
+                                                }
+                                            } else {
+                                                Toast.makeText(getContext(), "Invalid no. of looms", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        } else {
+                                            Toast.makeText(getContext(), "Invalid no. of workers", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "Invalid home based unit", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Invalid employment status", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(getContext(), "Invalid experience", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Invalid skill", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Invalid sector", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+
+                    Toast.makeText(getContext(), "Invalid Reason ", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Bean b = (Bean) getContext().getApplicationContext();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseurl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        final AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        final Call<sectorBean> call = cr.getSectors();
+
+        call.enqueue(new Callback<sectorBean>() {
+            @Override
+            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
+
+                if (response.body().getStatus().equals("1")) {
+
+                    sec.add("Select one --- ");
+
+                    for (int i = 0; i < response.body().getData().size(); i++) {
+
+                        sec.add(response.body().getData().get(i).getTitle());
+                        sec1.add(response.body().getData().get(i).getId());
+
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                            R.layout.spinner_model, sec);
+
+                    sector.setAdapter(adapter);
+
+                }
+
+                progress.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<sectorBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
+
+
+        /*sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i > 0) {
+
+                    sect = sec1.get(i - 1);
+
+                    Call<skillsBean> call2 = cr.getSkills1(String.valueOf(i));
+                    call2.enqueue(new Callback<skillsBean>() {
+                        @Override
+                        public void onResponse(Call<skillsBean> call, Response<skillsBean> response) {
+
+
+                            if (response.body().getStatus().equals("1")) {
+
+                                ski.clear();
+
+                                ski.add("Select one --- ");
+
+                                for (int i = 0; i < response.body().getData().size(); i++) {
+
+                                    ski.add(response.body().getData().get(i).getTitle());
+                                    ski1.add(response.body().getData().get(i).getId());
+                                    Log.d("DDD", "pppp");
+
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                        R.layout.spinner_model, ski);
+
+                                skills.setAdapter(adapter);
+
+                            }
+
+                            progress.setVisibility(View.GONE);
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<skillsBean> call, Throwable t) {
+                            progress.setVisibility(View.GONE);
+                        }
+                    });
+
+
+                } else {
+
+                    sect = "";
+                    ski.clear();
+                    ski.add("Select one --- ");
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                            R.layout.spinner_model, ski);
+
+
+                    skills.setAdapter(adapter);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+*/
+
+        Call<sectorBean> call3 = cr.getLocations();
+
+        call3.enqueue(new Callback<sectorBean>() {
+            @Override
+            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
+
+                if (response.body().getStatus().equals("1")) {
+
+                    loc.add("Select one --- ");
+
+                    for (int i = 0; i < response.body().getData().size(); i++) {
+
+                        loc.add(response.body().getData().get(i).getTitle());
+                        loc1.add(response.body().getData().get(i).getId());
+
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                            R.layout.spinner_model, loc);
+
+                    location.setAdapter(adapter);
+
+                }
+
+                progress.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<sectorBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
+
+        setPrevious();
+
+    }
+
     private void setPrevious() {
 
-        /*
-        int cp = 0;
-        for (int i = 0; i < ski.size(); i++) {
-            if (SharePreferenceUtils.getInstance().getString("skills").equals(ski.get(i))) {
-                cp = i;
-            }
-        }
-        skills.setSelection(cp);
-
-*/
         progress.setVisibility(View.VISIBLE);
 
         Bean b = (Bean) getContext().getApplicationContext();
@@ -584,6 +715,22 @@ public class Professional extends Fragment {
                 List<WorkerByIdData> item = response.body().getData();
 
                 employer.setText(item.get(0).getEmployer());
+
+                int sc = 0;
+                for (int i = 0; i < sec.size(); i++) {
+                    if (item.get(0).getSector().equals(sec.get(i))) {
+                        sc = i;
+                    }
+                }
+                sector.setSelection(sc);
+
+             /*   int sk = 0;
+                for (int i = 0; i < ski.size(); i++) {
+                    if (item.get(0).getSkills().equals(ski.get(i))) {
+                        sc = i;
+                    }
+                }
+                skills.setSelection(sk);*/
 
                 int rp = 0;
                 for (int i = 0; i < exp.size(); i++) {
@@ -627,10 +774,19 @@ public class Professional extends Fragment {
                 looms.setSelection(bp);
 
                 int sp = 0;
-                for (int i = 0; i < loc.size(); i++) {
-                    if (item.get(0).getLocation().equals(loc.get(i))) {
+                for (int i = 0; i < loc1.size(); i++) {
+
+                    if (item.get(0).getLocation().equals(loc1.get(i))) {
                         sp = i;
+                        editTxtLoc.setText("");
+                        editTxtLoc.setVisibility(View.GONE);
+                        break;
+                    } else {
+                        editTxtLoc.setVisibility(View.VISIBLE);
+                        editTxtLoc.setText(item.get(0).getLocation());
+                        sp = 5;
                     }
+
                 }
                 location.setSelection(sp);
 

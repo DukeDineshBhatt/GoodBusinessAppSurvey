@@ -3,14 +3,12 @@ package com.app.goodbusinessappsurvey;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,7 +62,6 @@ public class Ongoing extends Fragment {
 
         grid.setAdapter(adapter);
         grid.setLayoutManager(manager);
-
 
 
         return view;
@@ -158,10 +155,29 @@ public class Ongoing extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    Intent intent = new Intent(context , Profile.class);
-                    SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
-                    SharePreferenceUtils.getInstance().saveString("profile_id", item.getId());
-                    startActivity(intent);
+
+                    if (item.getType().equals("worker")){
+
+                        Intent intent = new Intent(context , Profile.class);
+                        SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
+                        SharePreferenceUtils.getInstance().saveString("profile_id", item.getId());
+                        startActivity(intent);
+
+                    }else if (item.getType().equals("brand"))
+                    {
+                       /* Intent intent = new Intent(CreatePIN.this , Register2.class);
+                        startActivity(intent);
+                        finishAffinity();*/
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(getContext() , Profile3.class);
+                        SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
+                        SharePreferenceUtils.getInstance().saveString("profile_id", item.getId());
+                        startActivity(intent);
+                        getActivity().finishAffinity();
+                    }
+
 
                 }
             });

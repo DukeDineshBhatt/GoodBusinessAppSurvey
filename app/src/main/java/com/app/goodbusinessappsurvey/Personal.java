@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,7 +42,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +72,7 @@ public class Personal extends Fragment {
 
     private CircleImageView image;
 
-    private String gend, cate, reli, educ, mari, chil, belo, sixt, fift, goin, id,prf;
+    private String gend, cate, reli, educ, mari, chil, belo, sixt, fift, goin, id, prf;
 
     private CheckBox check;
     private File f1;
@@ -518,6 +521,7 @@ public class Personal extends Fragment {
                                 e.printStackTrace();
                             }
 
+
                             String file = dir + DateFormat.format("yyyy-MM-dd_hhmmss", new Date()).toString() + ".jpg";
 
 
@@ -546,7 +550,6 @@ public class Personal extends Fragment {
 
             }
         });
-
 
         dob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -846,6 +849,23 @@ public class Personal extends Fragment {
 
     }
 
+    private static Bitmap decodeUriToBitmap(Context mContext, Uri sendUri) {
+        Bitmap getBitmap = null;
+        try {
+            InputStream image_stream;
+            try {
+                image_stream = mContext.getContentResolver().openInputStream(sendUri);
+                getBitmap = BitmapFactory.decodeStream(image_stream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getBitmap;
+    }
+
+
     private static String getPath(final Context context, final Uri uri) {
 
         // DocumentProvider
@@ -955,6 +975,8 @@ public class Personal extends Fragment {
                 .build();
 
         AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        Log.d("DDD",id);
 
         Call<WorkerByIdListBean> call = cr.getWorkerById(id);
 
