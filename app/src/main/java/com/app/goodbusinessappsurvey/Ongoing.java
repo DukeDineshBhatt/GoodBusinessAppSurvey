@@ -3,6 +3,7 @@ package com.app.goodbusinessappsurvey;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,18 +144,15 @@ public class Ongoing extends Fragment {
 
             final Datum item = list.get(position);
 
-
             holder.phone.setText(item.getPhone());
             holder.type.setText(item.getType());
             holder.date.setText(item.getCreated());
             holder.status.setText(item.getStatus());
             holder.address.setText(item.getCstreet()+" , "+item.getCarea()+" , "+item.getCdistrict()+" , "+item.getCstate()+" , "+item.getCpin());
 
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
 
                     if (item.getType().equals("worker")){
 
@@ -165,7 +163,7 @@ public class Ongoing extends Fragment {
 
                     }else if (item.getType().equals("brand"))
                     {
-                       /* Intent intent = new Intent(CreatePIN.this , Register2.class);
+                       /*Intent intent = new Intent(CreatePIN.this , Register2.class);
                         startActivity(intent);
                         finishAffinity();*/
                     }
@@ -175,9 +173,8 @@ public class Ongoing extends Fragment {
                         SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
                         SharePreferenceUtils.getInstance().saveString("profile_id", item.getId());
                         startActivity(intent);
-                        getActivity().finishAffinity();
-                    }
 
+                    }
 
                 }
             });

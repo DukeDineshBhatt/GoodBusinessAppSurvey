@@ -164,6 +164,26 @@ public class Professional extends Fragment {
             }
         });
 
+
+        skills.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i > 0) {
+                    skil = ski1.get(i - 1);
+                } else {
+                    skil = "";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         employment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -254,7 +274,7 @@ public class Professional extends Fragment {
 
                 loca = loc.get(i);
 
-                if (i == 5) {
+                if (i == 4) {
 
                     loc_bool = true;
 
@@ -275,8 +295,6 @@ public class Professional extends Fragment {
 
             }
         });
-
-        progress.setVisibility(View.VISIBLE);
 
         approve.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -390,8 +408,6 @@ public class Professional extends Fragment {
 
                 forceOpen();
 
-                progress.setVisibility(View.GONE);
-
 
             }
         });
@@ -417,7 +433,6 @@ public class Professional extends Fragment {
                 String value = input.getText().toString();
 
                 if (value != null) {
-                    // Do something with value
 
                     progress.setVisibility(View.VISIBLE);
 
@@ -530,17 +545,20 @@ public class Professional extends Fragment {
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
+                progress.setVisibility(View.GONE);
             }
         });
 
         alert.show();
-
+        progress.setVisibility(View.GONE);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+
+        progress.setVisibility(View.VISIBLE);
 
         Bean b = (Bean) getContext().getApplicationContext();
 
@@ -552,14 +570,15 @@ public class Professional extends Fragment {
 
         final AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
-        final Call<sectorBean> call = cr.getSectors();
+        Call<sectorBean> call = cr.getSectors();
 
         call.enqueue(new Callback<sectorBean>() {
             @Override
             public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
 
-                if (response.body().getStatus().equals("1")) {
 
+                if (response.body().getStatus().equals("1"))
+                {
                     sec.add("Select one --- ");
 
                     for (int i = 0; i < response.body().getData().size(); i++) {
@@ -586,8 +605,7 @@ public class Professional extends Fragment {
             }
         });
 
-
-        /*sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -595,7 +613,7 @@ public class Professional extends Fragment {
 
                     sect = sec1.get(i - 1);
 
-                    Call<skillsBean> call2 = cr.getSkills1(String.valueOf(i));
+                    Call<skillsBean> call2 = cr.getSkills1(sect);
                     call2.enqueue(new Callback<skillsBean>() {
                         @Override
                         public void onResponse(Call<skillsBean> call, Response<skillsBean> response) {
@@ -611,7 +629,6 @@ public class Professional extends Fragment {
 
                                     ski.add(response.body().getData().get(i).getTitle());
                                     ski1.add(response.body().getData().get(i).getId());
-                                    Log.d("DDD", "pppp");
 
                                 }
 
@@ -652,7 +669,6 @@ public class Professional extends Fragment {
 
             }
         });
-*/
 
         Call<sectorBean> call3 = cr.getLocations();
 
@@ -677,8 +693,6 @@ public class Professional extends Fragment {
                     location.setAdapter(adapter);
 
                 }
-
-                progress.setVisibility(View.GONE);
 
             }
 
@@ -717,12 +731,13 @@ public class Professional extends Fragment {
                 employer.setText(item.get(0).getEmployer());
 
                 int sc = 0;
-                for (int i = 0; i < sec.size(); i++) {
-                    if (item.get(0).getSector().equals(sec.get(i))) {
+                for (int i = 0; i < sec1.size(); i++) {
+                    if (item.get(0).getSector().equals(sec1.get(i))) {
                         sc = i;
                     }
                 }
-                sector.setSelection(sc);
+
+                sector.setSelection(sc + 1);
 
              /*   int sk = 0;
                 for (int i = 0; i < ski.size(); i++) {
@@ -763,7 +778,6 @@ public class Professional extends Fragment {
                     }
                 }
                 workers.setSelection(chp);
-
 
                 int bp = 0;
                 for (int i = 0; i < wor.size(); i++) {

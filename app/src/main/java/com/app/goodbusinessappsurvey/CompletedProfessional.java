@@ -77,6 +77,7 @@ public class CompletedProfessional extends Fragment {
         editTextLoc = view.findViewById(R.id.editTxtLoc);
 
         user_id = SharePreferenceUtils.getInstance().getString("user_id");
+        Log.d("IDDD",user_id);
 
         exp.add("Select one --- ");
         exp.add("0 to 2 years");
@@ -154,7 +155,7 @@ public class CompletedProfessional extends Fragment {
         AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
 
-        final Call<sectorBean> call = cr.getSectors();
+        Call<sectorBean> call = cr.getSectors();
 
         call.enqueue(new Callback<sectorBean>() {
             @Override
@@ -253,14 +254,14 @@ public class CompletedProfessional extends Fragment {
 
                 employer.setText(item.get(0).getEmployer());
 
-
                 int sc = 0;
-                for (int i = 0; i < sec.size(); i++) {
-                    if (item.get(0).getSector().equals(sec.get(i))) {
+                for (int i = 0; i < sec1.size(); i++) {
+                    if (item.get(0).getSector_id().equals(sec1.get(i))) {
                         sc = i;
                     }
                 }
-                sector.setSelection(sc);
+
+                sector.setSelection(sc + 1);
 
 
                 int cp = 0;

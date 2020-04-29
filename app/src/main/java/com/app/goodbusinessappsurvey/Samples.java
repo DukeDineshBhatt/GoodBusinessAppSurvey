@@ -58,11 +58,17 @@ public class Samples extends Fragment {
     StaggeredGridLayoutManager manager;
     Button upload , finish;
     ProgressBar progress;
-    List<Datum> list;
+    List<com.app.goodbusinessappsurvey.samplePOJO.Datum> list;
     SampleAdapter adapter;
     ImageView nodata;
     private Uri uri;
     private File f1;
+
+    private CustomViewPager pager;
+
+    void setData(CustomViewPager pager) {
+        this.pager = pager;
+    }
 
     @Nullable
     @Override
@@ -196,24 +202,21 @@ public class Samples extends Fragment {
             }
         });
 
-
-
-
     }
 
     class SampleAdapter extends RecyclerView.Adapter<SampleAdapter.ViewHolder>
     {
         Context context;
-        List<Datum> list = new ArrayList<>();
+        List<com.app.goodbusinessappsurvey.samplePOJO.Datum> list = new ArrayList<>();
 
 
-        SampleAdapter(Context context, List<Datum> list)
+        SampleAdapter(Context context, List<com.app.goodbusinessappsurvey.samplePOJO.Datum> list)
         {
             this.context = context;
             this.list = list;
         }
 
-        public void setData(List<Datum> list)
+        public void setData(List<com.app.goodbusinessappsurvey.samplePOJO.Datum> list)
         {
             this.list = list;
             notifyDataSetChanged();
@@ -230,7 +233,7 @@ public class Samples extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-            final Datum item = list.get(position);
+            final com.app.goodbusinessappsurvey.samplePOJO.Datum item = list.get(position);
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisk(true).cacheInMemory(true).resetViewBeforeLoading(false).build();
             ImageLoader loader = ImageLoader.getInstance();

@@ -106,6 +106,13 @@ public class Data {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("business_name")
+    @Expose
+    private String business_name;
+
+    @SerializedName("sector")
+    @Expose
+    private String sector;
 
 
     public String getId() {
@@ -380,5 +387,19 @@ public class Data {
         this.status = status;
     }
 
+    public String getBusiness_name() {
+        return business_name;
+    }
 
+    public void setBusiness_name(String business_name) {
+        this.business_name = business_name;
+    }
+
+    public String getSector() {
+        return sector;
+    }
+
+    public void setSector(String sector) {
+        this.sector = sector;
+    }
 }

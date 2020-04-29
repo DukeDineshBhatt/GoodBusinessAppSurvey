@@ -84,6 +84,12 @@ public interface AllApiIneterface {
     );
 
     @Multipart
+    @POST("roshni/api/deleteSample.php")
+    Call<sampleBean> deleteSample(
+            @Part("id") String id
+    );
+
+    @Multipart
     @POST("roshni/api/update_worker_professional3.php")
     Call<verifyBean> rejectWorkerProfessional(
             @Part("survey_id") String user_id,
@@ -178,6 +184,7 @@ public interface AllApiIneterface {
             @Part("availability") String availability,
             @Part("employer") String employer,
             @Part("about") String about,
+            @Part("sector") String sector,
             @Part MultipartBody.Part file1
     );
 

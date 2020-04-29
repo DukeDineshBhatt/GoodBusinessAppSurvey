@@ -38,6 +38,10 @@
         <activity
             android:name=".Profile"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Profile3"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

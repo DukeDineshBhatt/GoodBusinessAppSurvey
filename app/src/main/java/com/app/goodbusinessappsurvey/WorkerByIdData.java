@@ -153,6 +153,10 @@ public class WorkerByIdData {
     @Expose
     private String sector;
 
+    @SerializedName("sector_id")
+    @Expose
+    private String sector_id;
+
     public String getUser_id() {
         return user_id;
     }
@@ -447,5 +451,13 @@ public class WorkerByIdData {
 
     public void setSector(String sector) {
         this.sector = sector;
+    }
+
+    public String getSector_id() {
+        return sector_id;
+    }
+
+    public void setSector_id(String sector_id) {
+        this.sector_id = sector_id;
     }
 }

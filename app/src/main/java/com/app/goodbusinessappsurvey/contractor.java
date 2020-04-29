@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
+import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -67,9 +68,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class contractor extends Fragment {
 
-    private Spinner gender, establishment, experience, work, availability, firm, proof, firmtype;
+    private Spinner gender, establishment, experience, work, availability, firm, proof, firmtype, sector;
 
-    private String gend, esta, expe, wtyp, avai, frmy, prf, frmytyp;
+    private String gend, sect, esta, expe, wtyp, avai, frmy, prf, frmytyp;
 
     private EditText name, editTxtProof, reg_no, dob, business, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, home_based, employer, male, female, about;
 
@@ -81,7 +82,7 @@ public class contractor extends Fragment {
 
     private Button upload, submit;
 
-    private List<String> gen, est, exp, wty, ava, frm, frmtyp, prof;
+    private List<String> gen, est, exp, wty, ava, frm, frmtyp, prof, sec, sec1;
 
     private Uri uri;
     private File f1;
@@ -112,6 +113,8 @@ public class contractor extends Fragment {
         frm = new ArrayList<>();
         prof = new ArrayList<>();
         frmtyp = new ArrayList<>();
+        sec = new ArrayList<>();
+        sec1 = new ArrayList<>();
 
         name = view.findViewById(R.id.editText);
         dob = view.findViewById(R.id.dob);
@@ -138,6 +141,7 @@ public class contractor extends Fragment {
         proof = view.findViewById(R.id.proof);
         firmtype = view.findViewById(R.id.firmtype);
         reg_no = view.findViewById(R.id.reg_no);
+        sector = view.findViewById(R.id.sector);
 
 
         id = SharePreferenceUtils.getInstance().getString("user_id");
@@ -298,6 +302,24 @@ public class contractor extends Fragment {
         proof.setAdapter(adapter6);
         firmtype.setAdapter(adapter7);
 
+        sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i > 0) {
+                    sect = sec1.get(i-1);
+                } else {
+                    sect = "";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -347,6 +369,25 @@ public class contractor extends Fragment {
                     frmy = frm.get(i);
                 } else {
                     frmy = "";
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        firmtype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i > 0) {
+                    frmytyp = frmtyp.get(i);
+                } else {
+                    frmytyp = "";
                 }
 
 
@@ -433,6 +474,53 @@ public class contractor extends Fragment {
             }
         });
 
+
+        Bean b = (Bean) getContext().getApplicationContext();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseurl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        Call<sectorBean> call = cr.getSectors();
+
+        call.enqueue(new Callback<sectorBean>() {
+            @Override
+            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
+
+
+                if (response.body().getStatus().equals("1"))
+                {
+
+                    sec.add("Select one --- ");
+
+
+                    for (int i = 0; i < response.body().getData().size(); i++) {
+
+                        sec.add(response.body().getData().get(i).getTitle());
+                        sec1.add(response.body().getData().get(i).getId());
+
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                            R.layout.spinner_model, sec);
+
+                    sector.setAdapter(adapter);
+
+                }
+
+                progress.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<sectorBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
 
         check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -595,124 +683,131 @@ public class contractor extends Fragment {
                                                         if (pd.length() > 0) {
                                                             if (pa.length() > 0) {
                                                                 if (pst.length() > 0) {
-                                                                    if (l.length() > 0) {
-                                                                        if (m.length() > 0) {
-                                                                            if (f.length() > 0) {
-                                                                                if (expe.length() > 0) {
-                                                                                    if (wtyp.length() > 0) {
-                                                                                        if (avai.length() > 0) {
+                                                                    if (sect.length() > 0) {
+                                                                        if (l.length() > 0) {
+                                                                            if (m.length() > 0) {
+                                                                                if (f.length() > 0) {
+                                                                                    if (expe.length() > 0) {
+                                                                                        if (wtyp.length() > 0) {
+                                                                                            if (avai.length() > 0) {
 
 
-                                                                                            MultipartBody.Part body = null;
+                                                                                                MultipartBody.Part body = null;
 
-                                                                                            try {
+                                                                                                try {
 
-                                                                                                RequestBody reqFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), f1);
-                                                                                                body = MultipartBody.Part.createFormData("photo", f1.getName(), reqFile1);
-
-
-                                                                                            } catch (Exception e1) {
-                                                                                                e1.printStackTrace();
-                                                                                            }
-
-                                                                                            progress.setVisibility(View.VISIBLE);
-
-                                                                                            Bean b1 = (Bean) Objects.requireNonNull(getContext()).getApplicationContext();
-
-                                                                                            Retrofit retrofit = new Retrofit.Builder()
-                                                                                                    .baseUrl(b1.baseurl)
-                                                                                                    .addConverterFactory(ScalarsConverterFactory.create())
-                                                                                                    .addConverterFactory(GsonConverterFactory.create())
-                                                                                                    .build();
-
-                                                                                            AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
-
-                                                                                            Call<verifyBean> call = cr.update_contractor(
-                                                                                                    SharePreferenceUtils.getInstance().getString("user_id"),
-                                                                                                    n,
-                                                                                                    prf,
-                                                                                                    p,
-                                                                                                    frmy,
-                                                                                                    frmytyp,
-                                                                                                    r,
-                                                                                                    "",
-                                                                                                    "",
-                                                                                                    d,
-                                                                                                    gend,
-                                                                                                    b,
-                                                                                                    esta,
-                                                                                                    cp,
-                                                                                                    cs,
-                                                                                                    cd,
-                                                                                                    ca,
-                                                                                                    cst,
-                                                                                                    pp,
-                                                                                                    ps,
-                                                                                                    pd,
-                                                                                                    pa,
-                                                                                                    pst,
-                                                                                                    h,
-                                                                                                    l,
-                                                                                                    m,
-                                                                                                    f,
-                                                                                                    expe,
-                                                                                                    wtyp,
-                                                                                                    avai,
-                                                                                                    e,
-                                                                                                    ab,
-                                                                                                    body
-                                                                                            );
-
-                                                                                            call.enqueue(new Callback<verifyBean>() {
-                                                                                                @Override
-                                                                                                public void onResponse(Call<verifyBean> call, Response<verifyBean> response) {
-
-                                                                                                    assert response.body() != null;
-                                                                                                    if (response.body().getStatus().equals("1")) {
-                                                                                                        Data item = response.body().getData();
-
-                                                                                                        Intent registrationComplete = new Intent("photo");
-
-                                                                                                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(registrationComplete);
+                                                                                                    RequestBody reqFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), f1);
+                                                                                                    body = MultipartBody.Part.createFormData("photo", f1.getName(), reqFile1);
 
 
-                                                                                                        pager.setCurrentItem(1);
+                                                                                                } catch (Exception e1) {
+                                                                                                    e1.printStackTrace();
+                                                                                                }
 
-                                                                                                        Log.d("respo", response.body().getMessage());
+                                                                                                progress.setVisibility(View.VISIBLE);
 
-                                                                                                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                                                    } else {
-                                                                                                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                                Log.d("DDD", sect);
+
+                                                                                                Bean b1 = (Bean) Objects.requireNonNull(getContext()).getApplicationContext();
+
+                                                                                                Retrofit retrofit = new Retrofit.Builder()
+                                                                                                        .baseUrl(b1.baseurl)
+                                                                                                        .addConverterFactory(ScalarsConverterFactory.create())
+                                                                                                        .addConverterFactory(GsonConverterFactory.create())
+                                                                                                        .build();
+
+                                                                                                AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                                                                                                Call<verifyBean> call = cr.update_contractor(
+                                                                                                        SharePreferenceUtils.getInstance().getString("user_id"),
+                                                                                                        n,
+                                                                                                        prf,
+                                                                                                        p,
+                                                                                                        frmy,
+                                                                                                        frmytyp,
+                                                                                                        r,
+                                                                                                        "",
+                                                                                                        "",
+                                                                                                        d,
+                                                                                                        gend,
+                                                                                                        b,
+                                                                                                        esta,
+                                                                                                        cp,
+                                                                                                        cs,
+                                                                                                        cd,
+                                                                                                        ca,
+                                                                                                        cst,
+                                                                                                        pp,
+                                                                                                        ps,
+                                                                                                        pd,
+                                                                                                        pa,
+                                                                                                        pst,
+                                                                                                        h,
+                                                                                                        l,
+                                                                                                        m,
+                                                                                                        f,
+                                                                                                        expe,
+                                                                                                        wtyp,
+                                                                                                        avai,
+                                                                                                        e,
+                                                                                                        ab,
+                                                                                                        sect,
+                                                                                                        body
+                                                                                                );
+
+                                                                                                call.enqueue(new Callback<verifyBean>() {
+                                                                                                    @Override
+                                                                                                    public void onResponse(Call<verifyBean> call, Response<verifyBean> response) {
+
+                                                                                                        assert response.body() != null;
+                                                                                                        if (response.body().getStatus().equals("1")) {
+                                                                                                            Data item = response.body().getData();
+
+                                                                                                            Intent registrationComplete = new Intent("photo");
+
+                                                                                                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(registrationComplete);
+
+
+                                                                                                            pager.setCurrentItem(1);
+
+                                                                                                            Log.d("respo", response.body().getMessage());
+
+                                                                                                            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                                        } else {
+                                                                                                            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                                        }
+
+
+                                                                                                        progress.setVisibility(View.GONE);
+
                                                                                                     }
 
+                                                                                                    @Override
+                                                                                                    public void onFailure(Call<verifyBean> call, Throwable t) {
+                                                                                                        progress.setVisibility(View.GONE);
+                                                                                                    }
+                                                                                                });
 
-                                                                                                    progress.setVisibility(View.GONE);
-
-                                                                                                }
-
-                                                                                                @Override
-                                                                                                public void onFailure(Call<verifyBean> call, Throwable t) {
-                                                                                                    progress.setVisibility(View.GONE);
-                                                                                                }
-                                                                                            });
-
+                                                                                            } else {
+                                                                                                Toast.makeText(getActivity(), "Invalid availability", Toast.LENGTH_SHORT).show();
+                                                                                            }
                                                                                         } else {
-                                                                                            Toast.makeText(getActivity(), "Invalid availability", Toast.LENGTH_SHORT).show();
+                                                                                            Toast.makeText(getActivity(), "Invalid work type", Toast.LENGTH_SHORT).show();
                                                                                         }
                                                                                     } else {
-                                                                                        Toast.makeText(getActivity(), "Invalid work type", Toast.LENGTH_SHORT).show();
+                                                                                        Toast.makeText(getActivity(), "Invalid experience", Toast.LENGTH_SHORT).show();
                                                                                     }
                                                                                 } else {
-                                                                                    Toast.makeText(getActivity(), "Invalid experience", Toast.LENGTH_SHORT).show();
+                                                                                    Toast.makeText(getActivity(), "Invalid female workers", Toast.LENGTH_SHORT).show();
                                                                                 }
                                                                             } else {
-                                                                                Toast.makeText(getActivity(), "Invalid female workers", Toast.LENGTH_SHORT).show();
+                                                                                Toast.makeText(getActivity(), "Invalid male workers", Toast.LENGTH_SHORT).show();
                                                                             }
                                                                         } else {
-                                                                            Toast.makeText(getActivity(), "Invalid male workers", Toast.LENGTH_SHORT).show();
+                                                                            Toast.makeText(getActivity(), "Invalid home based units location", Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     } else {
-                                                                        Toast.makeText(getActivity(), "Invalid home based units location", Toast.LENGTH_SHORT).show();
+                                                                        Toast.makeText(getActivity(), "Invalid sector", Toast.LENGTH_SHORT).show();
                                                                     }
                                                                 } else {
                                                                     Toast.makeText(getContext(), "Invalid permanent street", Toast.LENGTH_SHORT).show();
@@ -938,11 +1033,9 @@ public class contractor extends Fragment {
                 ImageLoader loader = ImageLoader.getInstance();
                 loader.displayImage(item.getPhoto(), image, options);
 
-                //mw = item.getWorkersMale();
-                //fw = item.getWorkersFemale();
-
                 name.setText(item.getName());
                 editTxtProof.setText(item.getId_number());
+                business.setText(item.getBusiness_name());
                 cstreet.setText(item.getCstreet());
                 carea.setText(item.getCarea());
                 cdistrict.setText(item.getCdistrict());
@@ -953,11 +1046,11 @@ public class contractor extends Fragment {
                 pdistrict.setText(item.getPdistrict());
                 pstate.setText(item.getPstate());
                 ppin.setText(item.getPpin());
+                male.setText(item.getWorkersMale());
+                female.setText(item.getWorkersFemale());
 
                 reg_no.setText(item.getRegistration_no());
 
-                //experience.setText(item.getExperience());
-                //availability.setText(item.getAvailability());
                 dob.setText(item.getDob());
                 home_based.setText(item.getHomeUnits());
                 //home_location.setText(item.getHomeLocation());
@@ -1000,6 +1093,16 @@ public class contractor extends Fragment {
                 }
                 firmtype.setSelection(pft);
 
+
+                int sc = 0;
+                for (int i = 0; i < sec1.size(); i++) {
+                    if (item.getSector().equals(sec1.get(i))) {
+                        sc = i;
+                    }
+                }
+
+                sector.setSelection(sc + 1);
+
                 int rp = 0;
                 for (int i = 0; i < exp.size(); i++) {
                     if (item.getExperience().equals(exp.get(i))) {
@@ -1007,6 +1110,7 @@ public class contractor extends Fragment {
                     }
                 }
                 experience.setSelection(rp);
+
 
                 int ap = 0;
                 for (int i = 0; i < ava.size(); i++) {
@@ -1029,7 +1133,7 @@ public class contractor extends Fragment {
 
                 location.setTags(ppp.split(","));
 
-                /*int ep = 0;
+                int ep = 0;
                 for (int i = 0; i < est.size(); i++) {
                     if (item.getEstablishment_year().equals(est.get(i))) {
                         ep = i;
@@ -1037,8 +1141,6 @@ public class contractor extends Fragment {
                 }
                 establishment.setSelection(ep);
 
-
-*/
 
                 progress.setVisibility(View.GONE);
 
