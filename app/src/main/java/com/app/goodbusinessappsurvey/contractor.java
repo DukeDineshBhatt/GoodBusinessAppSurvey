@@ -216,7 +216,6 @@ public class contractor extends Fragment {
         est.add("2024");
         est.add("2025");
 
-
         exp.add("Select one --- ");
         exp.add("0 to 2 years");
         exp.add("3 to 5 years");
@@ -252,9 +251,7 @@ public class contractor extends Fragment {
         frmtyp.add("MSME");
         frmtyp.add("Cottage Industry");
 
-
         permanent = view.findViewById(R.id.permanent);
-
 
         check = view.findViewById(R.id.check);
 
@@ -370,7 +367,6 @@ public class contractor extends Fragment {
                 } else {
                     frmy = "";
                 }
-
 
             }
 
@@ -491,12 +487,10 @@ public class contractor extends Fragment {
             @Override
             public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
 
-
                 if (response.body().getStatus().equals("1"))
                 {
 
                     sec.add("Select one --- ");
-
 
                     for (int i = 0; i < response.body().getData().size(); i++) {
 
@@ -620,7 +614,6 @@ public class contractor extends Fragment {
 
             }
         });
-
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -850,7 +843,6 @@ public class contractor extends Fragment {
                     Toast.makeText(getContext(), "Invalid name", Toast.LENGTH_SHORT).show();
                 }
 
-
             }
         });
 
@@ -1007,7 +999,6 @@ public class contractor extends Fragment {
 
 
     private void setPrevious() {
-
 
         Bean b = (Bean) getContext().getApplicationContext();
 

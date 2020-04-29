@@ -56,7 +56,7 @@ public class Samples extends Fragment {
 
     RecyclerView grid;
     StaggeredGridLayoutManager manager;
-    Button upload , finish;
+    Button upload , finish,approve;
     ProgressBar progress;
     List<com.app.goodbusinessappsurvey.samplePOJO.Datum> list;
     SampleAdapter adapter;
@@ -82,6 +82,7 @@ public class Samples extends Fragment {
         finish = view.findViewById(R.id.button15);
         progress = view.findViewById(R.id.progressBar3);
         nodata = view.findViewById(R.id.imageView5);
+        approve = view.findViewById(R.id.approve);
 
         manager = new StaggeredGridLayoutManager(2 , StaggeredGridLayoutManager.VERTICAL);
         adapter = new SampleAdapter(getContext() , list);
@@ -148,6 +149,52 @@ public class Samples extends Fragment {
                     }
                 });
                 builder.show();
+
+            }
+        });
+
+
+        approve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                progress.setVisibility(View.VISIBLE);
+
+                Bean b = (Bean) getActivity().getApplicationContext();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(b.baseurl)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                Call<sampleBean> call = cr.submit_contactor(SharePreferenceUtils.getInstance().getString("user_id"));
+
+                call.enqueue(new Callback<sampleBean>() {
+                    @Override
+                    public void onResponse(Call<sampleBean> call, Response<sampleBean> response) {
+
+                        Log.d("DDD","DDD");
+                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        progress.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<sampleBean> call, Throwable t) {
+                        progress.setVisibility(View.GONE);
+                        Log.d("SSS","SSS");
+                    }
+                });
+
+
 
             }
         });
