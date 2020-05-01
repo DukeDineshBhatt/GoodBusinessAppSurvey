@@ -195,7 +195,6 @@ public class Samples extends Fragment {
                 });
 
 
-
             }
         });
 
@@ -286,11 +285,9 @@ public class Samples extends Fragment {
             ImageLoader loader = ImageLoader.getInstance();
             loader.displayImage(item.getFile() , holder.image , options);
 
-
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
 
                     progress.setVisibility(View.VISIBLE);
 
@@ -307,7 +304,6 @@ public class Samples extends Fragment {
                     Call<sampleBean> call = cr.deleteSample(
                             item.getId()
                     );
-
 
                     call.enqueue(new Callback<sampleBean>() {
                         @Override

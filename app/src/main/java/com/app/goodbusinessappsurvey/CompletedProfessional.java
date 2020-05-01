@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 
 import java.util.ArrayList;
@@ -40,11 +42,13 @@ public class CompletedProfessional extends Fragment {
     ProgressBar progress;
 
     String user_id;
+    boolean loc_bool = false;
 
-    EditText employer,editTextLoc;
+    EditText employer, editTextLoc;
 
 
     LinearLayout yes;
+
 
     @Nullable
     @Override
@@ -77,7 +81,8 @@ public class CompletedProfessional extends Fragment {
         editTextLoc = view.findViewById(R.id.editTxtLoc);
 
         user_id = SharePreferenceUtils.getInstance().getString("user_id");
-        Log.d("IDDD",user_id);
+
+        Log.d("ID",user_id);
 
         exp.add("Select one --- ");
         exp.add("0 to 2 years");
@@ -127,7 +132,6 @@ public class CompletedProfessional extends Fragment {
         ArrayAdapter<String> adapter5 = new ArrayAdapter<String>(getContext(),
                 R.layout.spinner_model, wor);
 
-
         sector.setEnabled(false);
         skills.setEnabled(false);
         experience.setEnabled(false);
@@ -144,6 +148,14 @@ public class CompletedProfessional extends Fragment {
         looms.setAdapter(adapter5);
 
 
+        return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         Bean b = (Bean) getContext().getApplicationContext();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -152,83 +164,12 @@ public class CompletedProfessional extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+        final AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
 
-        Call<sectorBean> call = cr.getSectors();
-
-        call.enqueue(new Callback<sectorBean>() {
-            @Override
-            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
-
-                if (response.body().getStatus().equals("1")) {
-
-                    sec.add("Select one --- ");
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-
-                        sec.add(response.body().getData().get(i).getTitle());
-                        sec1.add(response.body().getData().get(i).getId());
-
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                            R.layout.spinner_model, sec);
-
-                    sector.setAdapter(adapter);
-
-                }
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<sectorBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
-            }
-        });
-
-
-
-        Call<sectorBean> call3 = cr.getLocations();
-
-        call3.enqueue(new Callback<sectorBean>() {
-            @Override
-            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
-
-                if (response.body().getStatus().equals("1")) {
-
-                    loc.add("Select one --- ");
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-
-                        loc.add(response.body().getData().get(i).getTitle());
-                        loc1.add(response.body().getData().get(i).getId());
-
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                            R.layout.spinner_model, loc);
-
-                    location.setAdapter(adapter);
-
-                }
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<sectorBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
-            }
-        });
 
 
         setPrevious();
-
-        return view;
     }
 
     private void setPrevious() {
@@ -250,27 +191,115 @@ public class CompletedProfessional extends Fragment {
             @Override
             public void onResponse(Call<WorkerByIdListBean> call, Response<WorkerByIdListBean> response) {
 
-                List<WorkerByIdData> item = response.body().getData();
+                final List<WorkerByIdData> item = response.body().getData();
+
 
                 employer.setText(item.get(0).getEmployer());
 
-                int sc = 0;
-                for (int i = 0; i < sec1.size(); i++) {
-                    if (item.get(0).getSector_id().equals(sec1.get(i))) {
-                        sc = i;
+
+                final Call<sectorBean> call2 = cr.getSectors();
+
+                call2.enqueue(new Callback<sectorBean>() {
+                    @Override
+                    public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
+
+                        if (response.body().getStatus().equals("1")) {
+
+                            sec.clear();
+                            sec1.clear();
+
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+
+                                sec.add(response.body().getData().get(i).getTitle());
+                                sec1.add(response.body().getData().get(i).getId());
+
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                    R.layout.spinner_model, sec);
+
+                            sector.setAdapter(adapter);
+
+                            int cp2 = 0;
+                            for (int i = 0; i < sec.size(); i++) {
+                                if (item.get(0).getSector().equals(sec.get(i))) {
+                                    cp2 = i;
+                                }
+                            }
+                            sector.setSelection(cp2);
+
+                        }
+
+                        progress.setVisibility(View.GONE);
+
                     }
-                }
 
-                sector.setSelection(sc + 1);
-
-
-                int cp = 0;
-                for (int i = 0; i < ski.size(); i++) {
-                    if (item.get(0).getSkills().equals(ski.get(i))) {
-                        cp = i;
+                    @Override
+                    public void onFailure(Call<sectorBean> call, Throwable t) {
+                        progress.setVisibility(View.GONE);
                     }
-                }
-                skills.setSelection(cp);
+                });
+
+
+                sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        sect = sec1.get(i);
+
+                        progress.setVisibility(View.VISIBLE);
+
+                        Call<skillsBean> call2 = cr.getSkills1(sect);
+                        call2.enqueue(new Callback<skillsBean>() {
+                            @Override
+                            public void onResponse(Call<skillsBean> call, Response<skillsBean> response) {
+
+
+                                if (response.body().getStatus().equals("1")) {
+
+                                    ski.clear();
+                                    ski1.clear();
+
+                                    for (int i = 0; i < response.body().getData().size(); i++) {
+
+                                        ski.add(response.body().getData().get(i).getTitle());
+                                        ski1.add(response.body().getData().get(i).getId());
+
+                                    }
+
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                            R.layout.spinner_model, ski);
+
+                                    skills.setAdapter(adapter);
+
+                                    int cp = 0;
+                                    for (int i = 0; i < ski.size(); i++) {
+                                        if (item.get(0).getSkills().equals(ski.get(i))) {
+                                            cp = i;
+                                        }
+                                    }
+                                    skills.setSelection(cp);
+
+                                }
+
+                                progress.setVisibility(View.GONE);
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<skillsBean> call, Throwable t) {
+                                progress.setVisibility(View.GONE);
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
 
                 int rp = 0;
                 for (int i = 0; i < exp.size(); i++) {
@@ -312,22 +341,60 @@ public class CompletedProfessional extends Fragment {
                 }
                 looms.setSelection(bp);
 
-                int sp = 0;
-                for (int i = 0; i < loc1.size(); i++) {
 
-                    if (item.get(0).getLocation().equals(loc1.get(i))) {
-                        sp = i;
-                        editTextLoc.setText("");
-                        editTextLoc.setVisibility(View.GONE);
-                        break;
-                    } else {
-                        editTextLoc.setVisibility(View.VISIBLE);
-                        editTextLoc.setText(item.get(0).getLocation());
-                        sp = 5;
+
+                Call<sectorBean> call3 = cr.getLocations();
+
+                call3.enqueue(new Callback<sectorBean>() {
+                    @Override
+                    public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
+
+                        if (response.body().getStatus().equals("1")) {
+
+
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+
+                                loc.add(response.body().getData().get(i).getTitle());
+                                loc1.add(response.body().getData().get(i).getId());
+
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                    R.layout.spinner_model, loc);
+
+                            location.setAdapter(adapter);
+
+
+                            int sp = 0;
+                            for (int i = 0; i < loc.size(); i++) {
+
+                                if (item.get(0).getLocation().equals(loc.get(i))) {
+                                    sp = i;
+                                    editTextLoc.setText("");
+                                    editTextLoc.setVisibility(View.GONE);
+                                    break;
+                                } else {
+                                    editTextLoc.setVisibility(View.VISIBLE);
+                                    editTextLoc.setText(item.get(0).getLocation());
+                                    sp = loc.size() - 1;
+                                }
+
+                            }
+                            location.setSelection(sp);
+
+
+                        }
+
+                        progress.setVisibility(View.GONE);
+
                     }
 
-                }
-                location.setSelection(sp);
+                    @Override
+                    public void onFailure(Call<sectorBean> call, Throwable t) {
+                        progress.setVisibility(View.GONE);
+                    }
+                });
+
 
                 progress.setVisibility(View.GONE);
 

@@ -86,7 +86,7 @@ public interface AllApiIneterface {
     @Multipart
     @POST("roshni/api/submit_contactor.php")
     Call<sampleBean> submit_contactor(
-            @Part("user_id") String user_id
+            @Part("survey_id") String survey_id
     );
 
     @Multipart

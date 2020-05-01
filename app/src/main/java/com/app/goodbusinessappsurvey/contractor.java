@@ -38,6 +38,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
 import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -82,7 +83,7 @@ public class contractor extends Fragment {
 
     private Button upload, submit;
 
-    private List<String> gen, est, exp, wty, ava, frm, frmtyp, prof, sec, sec1;
+    private List<String> gen, est, exp, wty, ava, frm, frmtyp, prof, sec, sec1,wty1;
 
     private Uri uri;
     private File f1;
@@ -115,6 +116,7 @@ public class contractor extends Fragment {
         frmtyp = new ArrayList<>();
         sec = new ArrayList<>();
         sec1 = new ArrayList<>();
+        wty1 = new ArrayList<>();
 
         name = view.findViewById(R.id.editText);
         dob = view.findViewById(R.id.dob);
@@ -145,6 +147,8 @@ public class contractor extends Fragment {
 
 
         id = SharePreferenceUtils.getInstance().getString("user_id");
+
+        Log.d("ID",id);
 
         gen.add("Select one --- ");
         gen.add("Male");
@@ -223,14 +227,6 @@ public class contractor extends Fragment {
         exp.add("more than 10 years");
 
 
-        wty.add("Select one --- ");
-        wty.add("Adda Work");
-        wty.add("Fashion Jewelry");
-        wty.add("Zari Work");
-        wty.add("Embroidery");
-        wty.add("Tassel Work");
-
-
         ava.add("Select one --- ");
         ava.add("Available");
         ava.add("Within a Month");
@@ -275,9 +271,6 @@ public class contractor extends Fragment {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getContext(),
                 R.layout.spinner_model, exp);
 
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(getContext(),
-                R.layout.spinner_model, wty);
-
         ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(getContext(),
                 R.layout.spinner_model, ava);
 
@@ -293,21 +286,18 @@ public class contractor extends Fragment {
         gender.setAdapter(adapter);
         establishment.setAdapter(adapter1);
         experience.setAdapter(adapter2);
-        work.setAdapter(adapter3);
         availability.setAdapter(adapter4);
         firm.setAdapter(adapter5);
         proof.setAdapter(adapter6);
         firmtype.setAdapter(adapter7);
 
-        sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+        work.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
-                    sect = sec1.get(i-1);
-                } else {
-                    sect = "";
-                }
+                wtyp = wty1.get(i);
 
             }
 
@@ -433,24 +423,6 @@ public class contractor extends Fragment {
         });
 
 
-        work.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i > 0) {
-                    wtyp = wty.get(i);
-                } else {
-                    wtyp = "";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
 
         availability.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -470,51 +442,6 @@ public class contractor extends Fragment {
             }
         });
 
-
-        Bean b = (Bean) getContext().getApplicationContext();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(b.baseurl)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
-
-        Call<sectorBean> call = cr.getSectors();
-
-        call.enqueue(new Callback<sectorBean>() {
-            @Override
-            public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
-
-                if (response.body().getStatus().equals("1"))
-                {
-
-                    sec.add("Select one --- ");
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-
-                        sec.add(response.body().getData().get(i).getTitle());
-                        sec1.add(response.body().getData().get(i).getId());
-
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                            R.layout.spinner_model, sec);
-
-                    sector.setAdapter(adapter);
-
-                }
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<sectorBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
-            }
-        });
 
         check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -663,6 +590,9 @@ public class contractor extends Fragment {
                 }
 
 
+                Log.d("Sec",sect);
+                Log.d("work",wtyp);
+
                 if (n.length() > 0) {
                     if (d.length() > 0) {
                         if (gend.length() > 0) {
@@ -763,7 +693,6 @@ public class contractor extends Fragment {
 
                                                                                                             pager.setCurrentItem(1);
 
-                                                                                                            Log.d("respo", response.body().getMessage());
 
                                                                                                             Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                                                                                         } else {
@@ -1008,7 +937,7 @@ public class contractor extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+        final AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
 
         Call<contractorBean> call = cr.getContractorById(id);
@@ -1018,7 +947,7 @@ public class contractor extends Fragment {
             @Override
             public void onResponse(Call<contractorBean> call, Response<contractorBean> response) {
 
-                com.app.goodbusinessappsurvey.contractorPOJO.Data item = response.body().getData();
+                final com.app.goodbusinessappsurvey.contractorPOJO.Data item = response.body().getData();
 
                 DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true).resetViewBeforeLoading(false).build();
                 ImageLoader loader = ImageLoader.getInstance();
@@ -1085,14 +1014,109 @@ public class contractor extends Fragment {
                 firmtype.setSelection(pft);
 
 
-                int sc = 0;
-                for (int i = 0; i < sec1.size(); i++) {
-                    if (item.getSector().equals(sec1.get(i))) {
-                        sc = i;
-                    }
-                }
+                final Call<sectorBean> call2 = cr.getSectors();
 
-                sector.setSelection(sc + 1);
+                call2.enqueue(new Callback<sectorBean>() {
+                    @Override
+                    public void onResponse(Call<sectorBean> call, Response<sectorBean> response) {
+
+                        if (response.body().getStatus().equals("1")) {
+
+                            sec.clear();
+                            sec1.clear();
+
+                            for (int i = 0; i < response.body().getData().size(); i++) {
+
+                                sec.add(response.body().getData().get(i).getTitle());
+                                sec1.add(response.body().getData().get(i).getId());
+
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                    R.layout.spinner_model, sec);
+
+                            sector.setAdapter(adapter);
+
+                            int cp2 = 0;
+                            for (int i = 0; i < sec1.size(); i++) {
+                                if (item.getSector().equals(sec1.get(i))) {
+                                    cp2 = i;
+                                }
+                            }
+                            sector.setSelection(cp2);
+
+                        }
+
+                        progress.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<sectorBean> call, Throwable t) {
+                        progress.setVisibility(View.GONE);
+                    }
+                });
+
+                sector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        sect = sec1.get(i);
+
+                        progress.setVisibility(View.VISIBLE);
+
+                        Call<skillsBean> call2 = cr.getSkills1(sect);
+                        call2.enqueue(new Callback<skillsBean>() {
+                            @Override
+                            public void onResponse(Call<skillsBean> call, Response<skillsBean> response) {
+
+
+                                if (response.body().getStatus().equals("1")) {
+
+                                    wty.clear();
+                                    wty1.clear();
+
+                                    for (int i = 0; i < response.body().getData().size(); i++) {
+
+                                        wty.add(response.body().getData().get(i).getTitle());
+                                        wty1.add(response.body().getData().get(i).getId());
+
+                                    }
+
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                            R.layout.spinner_model, wty);
+
+                                    work.setAdapter(adapter);
+
+                                    int cp = 0;
+                                    for (int i = 0; i < wty1.size(); i++) {
+                                        if (item.getWorkType().equals(wty1.get(i))) {
+                                            cp = i;
+                                        }
+                                    }
+                                    work.setSelection(cp);
+
+                                }
+
+                                progress.setVisibility(View.GONE);
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<skillsBean> call, Throwable t) {
+                                progress.setVisibility(View.GONE);
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
 
                 int rp = 0;
                 for (int i = 0; i < exp.size(); i++) {
@@ -1111,14 +1135,6 @@ public class contractor extends Fragment {
                 }
                 availability.setSelection(ap);
 
-
-                int wp = 0;
-                for (int i = 0; i < wty.size(); i++) {
-                    if (item.getWorkType().equals(wty.get(i))) {
-                        wp = i;
-                    }
-                }
-                work.setSelection(wp);
 
                 String ppp = item.getHomeLocation();
 

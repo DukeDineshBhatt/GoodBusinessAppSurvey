@@ -625,10 +625,6 @@ public class Personal extends Fragment {
                     educ = editTxtedu.getText().toString();
                 }
 
-                Log.d("DDDDD", prf);
-                Log.d("DDDDD", idno);
-                Log.d("DDDDD", reli);
-                Log.d("DDDDD", educ);
 
 
                 if (n.length() > 0) {
