@@ -85,8 +85,15 @@ public interface AllApiIneterface {
 
     @Multipart
     @POST("roshni/api/submit_contactor.php")
-    Call<sampleBean> submit_contactor(
+    Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> submit_contactor(
             @Part("survey_id") String survey_id
+    );
+
+    @Multipart
+    @POST("roshni/api/reject_contactor.php")
+    Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> reject_contactor(
+            @Part("survey_id") String survey_id,
+            @Part("reason") String reason
     );
 
     @Multipart

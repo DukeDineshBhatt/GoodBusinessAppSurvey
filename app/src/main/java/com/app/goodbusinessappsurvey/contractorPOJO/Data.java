@@ -114,6 +114,10 @@ public class Data {
     @Expose
     private String sector;
 
+    @SerializedName("reject_reason")
+    @Expose
+    private String reject_reason;
+
 
     public String getId() {
         return id;
@@ -401,5 +405,13 @@ public class Data {
 
     public void setSector(String sector) {
         this.sector = sector;
+    }
+
+    public String getReject_reason() {
+        return reject_reason;
+    }
+
+    public void setReject_reason(String reject_reason) {
+        this.reject_reason = reject_reason;
     }
 }

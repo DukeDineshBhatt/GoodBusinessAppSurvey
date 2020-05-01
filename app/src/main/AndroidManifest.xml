@@ -27,7 +27,6 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait">
 
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,6 +43,9 @@
 
         <activity
             android:name=".Profile3"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CompletedContractorProfile"
             android:screenOrientation="portrait" />
     </application>
 

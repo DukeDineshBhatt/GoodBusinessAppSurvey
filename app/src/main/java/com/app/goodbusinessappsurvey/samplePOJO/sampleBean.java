@@ -32,7 +32,7 @@ public class sampleBean {
         this.message = message;
     }
 
-    public List<Datum> getData() {
+    public List<com.app.goodbusinessappsurvey.samplePOJO.Datum> getData() {
         return data;
     }
 

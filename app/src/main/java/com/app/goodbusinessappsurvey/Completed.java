@@ -158,12 +158,32 @@ public class Completed extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    Intent intent = new Intent(context , CompletedProfile.class);
-                    SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
-                    startActivity(intent);
+
+                    if (item.getType().equals("worker")){
+
+                        Intent intent = new Intent(context , CompletedProfile.class);
+                        SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
+                        startActivity(intent);
+
+                    }else if (item.getType().equals("brand"))
+                    {
+                       /*Intent intent = new Intent(CreatePIN.this , Register2.class);
+                        startActivity(intent);
+                        finishAffinity();*/
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(getContext() , CompletedContractorProfile.class);
+                        SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
+
+                        startActivity(intent);
+
+                    }
 
                 }
             });
+
+
 
         }
 

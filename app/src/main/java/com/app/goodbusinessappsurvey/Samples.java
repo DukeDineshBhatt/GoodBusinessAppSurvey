@@ -1,5 +1,6 @@
 package com.app.goodbusinessappsurvey;
 
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -56,7 +58,7 @@ public class Samples extends Fragment {
 
     RecyclerView grid;
     StaggeredGridLayoutManager manager;
-    Button upload , finish,approve;
+    Button upload , finish,approve,reject;
     ProgressBar progress;
     List<com.app.goodbusinessappsurvey.samplePOJO.Datum> list;
     SampleAdapter adapter;
@@ -83,6 +85,7 @@ public class Samples extends Fragment {
         progress = view.findViewById(R.id.progressBar3);
         nodata = view.findViewById(R.id.imageView5);
         approve = view.findViewById(R.id.approve);
+        reject = view.findViewById(R.id.reject);
 
         manager = new StaggeredGridLayoutManager(2 , StaggeredGridLayoutManager.VERTICAL);
         adapter = new SampleAdapter(getContext() , list);
@@ -90,6 +93,7 @@ public class Samples extends Fragment {
         grid.setAdapter(adapter);
         grid.setLayoutManager(manager);
 
+        Log.d("DDD",SharePreferenceUtils.getInstance().getString("survey_id"));
 
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,13 +174,13 @@ public class Samples extends Fragment {
 
                 AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
-                Call<sampleBean> call = cr.submit_contactor(SharePreferenceUtils.getInstance().getString("user_id"));
+                Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> call = cr.submit_contactor(SharePreferenceUtils.getInstance().getString("survey_id"));
 
-                call.enqueue(new Callback<sampleBean>() {
+                call.enqueue(new Callback<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean>() {
                     @Override
-                    public void onResponse(Call<sampleBean> call, Response<sampleBean> response) {
+                    public void onResponse(Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> call, Response<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> response) {
 
-                        Log.d("DDD","DDD");
+
                         Intent intent = new Intent(getContext(), MainActivity.class);
                         startActivity(intent);
                         getActivity().finish();
@@ -188,7 +192,7 @@ public class Samples extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<sampleBean> call, Throwable t) {
+                    public void onFailure(Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> call, Throwable t) {
                         progress.setVisibility(View.GONE);
                         Log.d("SSS","SSS");
                     }
@@ -197,6 +201,88 @@ public class Samples extends Fragment {
 
             }
         });
+
+
+        reject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                alert.setTitle("Reason for rejecting this profile?");
+
+                // Set an EditText view to get user input
+                final EditText input = new EditText(getContext());
+                input.setHint("tab to enter");
+                alert.setView(input);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        String value = input.getText().toString().trim();
+
+                        if (value.length() > 0 || value.startsWith("  ")) {
+
+                            progress.setVisibility(View.VISIBLE);
+
+                            Bean b = (Bean) getActivity().getApplicationContext();
+
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl(b.baseurl)
+                                    .addConverterFactory(ScalarsConverterFactory.create())
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+
+                            AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                            Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> call = cr.reject_contactor(SharePreferenceUtils.getInstance().getString("survey_id"),value);
+
+                            call.enqueue(new Callback<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean>() {
+                                @Override
+                                public void onResponse(Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> call, Response<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> response) {
+
+
+                                    Intent intent = new Intent(getContext(), MainActivity.class);
+                                    startActivity(intent);
+                                    getActivity().finish();
+
+                                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    progress.setVisibility(View.GONE);
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> call, Throwable t) {
+                                    progress.setVisibility(View.GONE);
+                                    Log.d("SSS","SSS");
+                                }
+                            });
+
+                        } else {
+
+                            Toast.makeText(getContext(), "Invalid Reason ", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                        Log.d("CANCEL","cancel");
+                        progress.setVisibility(View.GONE);
+                    }
+                });
+
+                alert.show();
+                progress.setVisibility(View.GONE);
+
+
+            }
+        });
+
 
 
         return view;
