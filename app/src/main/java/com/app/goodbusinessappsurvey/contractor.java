@@ -41,6 +41,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
 import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
+import com.app.goodbusinessappsurvey.verifyPOJO.Data;
+import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

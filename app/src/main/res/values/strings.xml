@@ -193,5 +193,10 @@
     <string name="firm">TYPE OF FIRM</string>
     <string name="firmtype">TYPE OF FIRM REGISTRATION</string>
     <string name="reg_number">REGISTRATION No. (IF ANY)</string>
+    <string name="company_contact_details">COMPANY CONTACT DETAILS</string>
+    <string name="manufacturing_unit3">MANUFACTURING UNITS</string>
+    <string name="factory_outlet3">FACTORY OUTLET</string>
+    <string name="importing_countries3">IMPORTING COUNTRIES</string>
+    <string name="google_maps_key">AIzaSyCgsH_uHFwFsCY4hUXgJsIjnSx2DwxK1Rw</string>
 
 </resources>

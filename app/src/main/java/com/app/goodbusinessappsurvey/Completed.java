@@ -167,9 +167,10 @@ public class Completed extends Fragment {
 
                     }else if (item.getType().equals("brand"))
                     {
-                       /*Intent intent = new Intent(CreatePIN.this , Register2.class);
+                        Intent intent = new Intent(context , CompletedBrandProfile.class);
+                        SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
                         startActivity(intent);
-                        finishAffinity();*/
+
                     }
                     else
                     {

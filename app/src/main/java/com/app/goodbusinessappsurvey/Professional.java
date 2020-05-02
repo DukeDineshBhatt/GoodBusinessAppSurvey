@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 
 import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
+import com.app.goodbusinessappsurvey.verifyPOJO.Data;
+import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -476,7 +478,7 @@ public class Professional extends Fragment {
                                                     public void onResponse(Call<verifyBean> call, Response<verifyBean> response) {
 
                                                         if (response.body().getStatus().equals("1")) {
-                                                            Data item = response.body().getData();
+                                                            com.app.goodbusinessappsurvey.verifyPOJO.Data item = response.body().getData();
 
                                                             Intent intent = new Intent(getContext(), Profile.class);
                                                             startActivity(intent);

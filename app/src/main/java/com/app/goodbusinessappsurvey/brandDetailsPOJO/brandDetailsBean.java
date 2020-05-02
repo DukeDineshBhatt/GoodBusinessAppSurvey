@@ -1,9 +1,10 @@
-package com.app.goodbusinessappsurvey;
+package com.app.goodbusinessappsurvey.brandDetailsPOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class verifyBean {
+public class brandDetailsBean {
+
     @SerializedName("status")
     @Expose
     private String status;

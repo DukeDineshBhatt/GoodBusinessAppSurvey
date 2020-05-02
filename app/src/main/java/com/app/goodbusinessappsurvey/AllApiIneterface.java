@@ -1,9 +1,11 @@
 package com.app.goodbusinessappsurvey;
 
 import com.app.goodbusinessappsurvey.SkillsPOJO.skillsBean;
+import com.app.goodbusinessappsurvey.brandDetailsPOJO.brandDetailsBean;
 import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
 import com.app.goodbusinessappsurvey.samplePOJO.sampleBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
+import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -90,8 +92,21 @@ public interface AllApiIneterface {
     );
 
     @Multipart
+    @POST("roshni/api/submit_brand.php")
+    Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> submit_brand(
+            @Part("survey_id") String survey_id
+    );
+
+    @Multipart
     @POST("roshni/api/reject_contactor.php")
     Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> reject_contactor(
+            @Part("survey_id") String survey_id,
+            @Part("reason") String reason
+    );
+
+    @Multipart
+    @POST("roshni/api/reject_brand.php")
+    Call<com.app.goodbusinessappsurvey.contractorPOJO.contractorBean> reject_brand(
             @Part("survey_id") String survey_id,
             @Part("reason") String reason
     );
@@ -199,6 +214,47 @@ public interface AllApiIneterface {
             @Part("about") String about,
             @Part("sector") String sector,
             @Part MultipartBody.Part file1
+    );
+
+    @Multipart
+    @POST("roshni/api/update_brand.php")
+    Call<verifyBean> updateBrand(
+            @Part("user_id") String user_id,
+            @Part("name") String name,
+            @Part("firm_type") String firm_type,
+            @Part("firm_registration_type") String firm_registration_type,
+            @Part("registration_number") String registration_number,
+            @Part("lat") String lat,
+            @Part("lng") String lng,
+            @Part("sector") String sector,
+            @Part("contact_details") String contact_details,
+            @Part("contact_person") String contact_person,
+            @Part("cpin") String cpin,
+            @Part("cstate") String cstate,
+            @Part("cdistrict") String cdistrict,
+            @Part("carea") String carea,
+            @Part("cstreet") String cstreet,
+            @Part("ppin") String ppin,
+            @Part("pstate") String pstate,
+            @Part("pdistrict") String pdistrict,
+            @Part("parea") String parea,
+            @Part("pstreet") String pstreet,
+            @Part("manufacturing_units") String manufacturing_units,
+            @Part("factory_outlet") String factory_outlet,
+            @Part("products") String products,
+            @Part("country") String country,
+            @Part("workers") String workers,
+            @Part("certification") String certification,
+            @Part("expiry") String expiry,
+            @Part("website") String website,
+            @Part("email") String email,
+            @Part MultipartBody.Part file1
+    );
+
+    @Multipart
+    @POST("roshni/api/getBrandById.php")
+    Call<brandDetailsBean> getBrandById(
+            @Part("id") String id
     );
 
 }

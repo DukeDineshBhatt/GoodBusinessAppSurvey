@@ -163,9 +163,10 @@ public class Ongoing extends Fragment {
 
                     }else if (item.getType().equals("brand"))
                     {
-                       /*Intent intent = new Intent(CreatePIN.this , Register2.class);
+                        Intent intent = new Intent(context , Profile2.class);
+                        SharePreferenceUtils.getInstance().saveString("user_id", item.getProfile_id());
+                        SharePreferenceUtils.getInstance().saveString("survey_id", item.getId());
                         startActivity(intent);
-                        finishAffinity();*/
                     }
                     else
                     {

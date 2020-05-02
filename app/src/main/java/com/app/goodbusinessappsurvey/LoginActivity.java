@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.app.goodbusinessappsurvey.verifyPOJO.Data;
+import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
