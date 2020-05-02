@@ -95,7 +95,7 @@ public class Samples extends Fragment {
 
         Log.d("DDD",SharePreferenceUtils.getInstance().getString("survey_id"));
 
-        finish.setOnClickListener(new View.OnClickListener() {
+        /*finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -104,7 +104,7 @@ public class Samples extends Fragment {
                 getActivity().finishAffinity();
 
             }
-        });
+        });*/
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override

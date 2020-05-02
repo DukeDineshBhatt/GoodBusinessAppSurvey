@@ -93,7 +93,7 @@ public class Professional extends Fragment {
         editTxtLoc = view.findViewById(R.id.editTxtLoc);
 
         id = SharePreferenceUtils.getInstance().getString("user_id");
-        profile_id = SharePreferenceUtils.getInstance().getString("profile_id");
+        profile_id = SharePreferenceUtils.getInstance().getString("survey_id");
 
         exp.add("Select one --- ");
         exp.add("0 to 2 years");
@@ -455,6 +455,8 @@ public class Professional extends Fragment {
                                                         .build();
 
                                                 AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                                                Log.d("profileid" , profile_id);
 
                                                 Call<verifyBean> call = cr.updateWorkerProfessional(
                                                         profile_id,
