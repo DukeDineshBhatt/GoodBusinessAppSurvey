@@ -72,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Data item = response.body().getData();
 
                                     SharePreferenceUtils.getInstance().saveString("id", item.getId());
+                                    SharePreferenceUtils.getInstance().saveString("name", item.getName());
 
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     //intent.putExtra("id" , item.getId());

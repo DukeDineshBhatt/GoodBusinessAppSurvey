@@ -1,13 +1,18 @@
 package com.app.goodbusinessappsurvey;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,6 +39,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -43,6 +50,19 @@ import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 import com.app.goodbusinessappsurvey.verifyPOJO.Data;
 import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -51,6 +71,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -67,6 +89,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class contractor extends Fragment {
@@ -80,19 +103,26 @@ public class contractor extends Fragment {
     TagsEditText location;
 
     private CircleImageView image;
+    private static final String TAG = "personal";
 
     CheckBox check;
 
     private Button upload, submit;
 
-    private List<String> gen, est, exp, wty, ava, frm, frmtyp, prof, sec, sec1,wty1;
+    private List<String> gen, est, exp, wty, ava, frm, frmtyp, prof, sec, sec1, wty1;
 
     private Uri uri;
     private File f1;
 
     private boolean che = false;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     private LinearLayout permanent;
+    private boolean mLocationPermissionGranted;
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private PlacesClient mPlacesClient;
+    private Location mLastKnownLocation;
 
     private ProgressBar progress;
     private CustomViewPager pager;
@@ -119,6 +149,43 @@ public class contractor extends Fragment {
         sec = new ArrayList<>();
         sec1 = new ArrayList<>();
         wty1 = new ArrayList<>();
+
+        Places.initialize(getContext().getApplicationContext(), getString(R.string.google_maps_key));
+        mPlacesClient = Places.createClient(getContext());
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        getLocationPermission();
+
+        try {
+            if (mLocationPermissionGranted) {
+                Task locationResult = mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+
+
+                        if (location != null) {
+                            // Logic to handle location object
+                            mLastKnownLocation = location;
+                            Log.d("location", String.valueOf(mLastKnownLocation.getLatitude()));
+                        }
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        e.printStackTrace();
+
+                    }
+                });
+
+            }
+        } catch (Exception e) {
+            Log.e("Exception1: %s", e.getMessage());
+        }
+
 
         name = view.findViewById(R.id.editText);
         dob = view.findViewById(R.id.dob);
@@ -150,7 +217,7 @@ public class contractor extends Fragment {
 
         id = SharePreferenceUtils.getInstance().getString("user_id");
 
-        Log.d("ID",id);
+        Log.d("ID", id);
 
         gen.add("Select one --- ");
         gen.add("Male");
@@ -293,6 +360,65 @@ public class contractor extends Fragment {
         proof.setAdapter(adapter6);
         firmtype.setAdapter(adapter7);
 
+        cstate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.FULLSCREEN, fields)
+                        .setCountries(Collections.singletonList("IN"))
+                        .setTypeFilter(TypeFilter.CITIES)
+                        .build(getActivity());
+                startActivityForResult(intent, 11);
+
+            }
+        });
+
+        cdistrict.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.FULLSCREEN, fields)
+                        .setCountries(Collections.singletonList("IN"))
+                        .setTypeFilter(TypeFilter.REGIONS)
+                        .build(getActivity());
+                startActivityForResult(intent, 12);
+
+            }
+        });
+
+        pstate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.FULLSCREEN, fields)
+                        .setCountries(Collections.singletonList("IN"))
+                        .setTypeFilter(TypeFilter.CITIES)
+                        .build(getActivity());
+                startActivityForResult(intent, 13);
+
+            }
+        });
+
+        pdistrict.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.FULLSCREEN, fields)
+                        .setCountries(Collections.singletonList("IN"))
+                        .setTypeFilter(TypeFilter.REGIONS)
+                        .build(getActivity());
+                startActivityForResult(intent, 14);
+
+            }
+        });
 
 
         work.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -423,7 +549,6 @@ public class contractor extends Fragment {
 
             }
         });
-
 
 
         availability.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -592,8 +717,8 @@ public class contractor extends Fragment {
                 }
 
 
-                Log.d("Sec",sect);
-                Log.d("work",wtyp);
+                Log.d("Sec", sect);
+                Log.d("work", wtyp);
 
                 if (n.length() > 0) {
                     if (d.length() > 0) {
@@ -651,8 +776,8 @@ public class contractor extends Fragment {
                                                                                                         frmy,
                                                                                                         frmytyp,
                                                                                                         r,
-                                                                                                        "",
-                                                                                                        "",
+                                                                                                        String.valueOf(mLastKnownLocation.getLatitude()),
+                                                                                                        String.valueOf(mLastKnownLocation.getLongitude()),
                                                                                                         d,
                                                                                                         gend,
                                                                                                         b,
@@ -782,6 +907,23 @@ public class contractor extends Fragment {
         return view;
     }
 
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -810,9 +952,113 @@ public class contractor extends Fragment {
         } else if (requestCode == 1 && resultCode == RESULT_OK) {
             image.setImageURI(uri);
         }
+        if (requestCode == 11) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
 
+
+                Geocoder geocoder = new Geocoder(getContext());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    String cii = addresses.get(0).getLocality();
+                    String stat = addresses.get(0).getAdminArea();
+
+                    cstate.setText(stat);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+
+        if (requestCode == 12) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+
+                Geocoder geocoder = new Geocoder(getContext());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    Log.d("addresss", String.valueOf(addresses.get(0)));
+                    String cii = addresses.get(0).getLocality();
+
+                    cdistrict.setText(cii);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+
+        if (requestCode == 13) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+
+
+                Geocoder geocoder = new Geocoder(getContext());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    String cii = addresses.get(0).getLocality();
+                    String stat = addresses.get(0).getAdminArea();
+
+                    pstate.setText(stat);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+
+        if (requestCode == 14) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+
+
+                Geocoder geocoder = new Geocoder(getContext());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    String cii = addresses.get(0).getSubLocality();
+
+                    pdistrict.setText(cii);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
 
     }
+
 
     private static Bitmap decodeUriToBitmap(Context mContext, Uri sendUri) {
         Bitmap getBitmap = null;

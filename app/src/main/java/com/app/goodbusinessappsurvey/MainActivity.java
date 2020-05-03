@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawer;
     ImageView toggle;
 
-    TextView about , logout;
+    TextView about, logout, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         pager = findViewById(R.id.pager);
         about = findViewById(R.id.textView59);
         logout = findViewById(R.id.textView25);
+        name = findViewById(R.id.textView56);
 
         tabs.addTab(tabs.newTab().setText("Ongoing"));
         tabs.addTab(tabs.newTab().setText("Completed"));
@@ -62,10 +64,12 @@ public class MainActivity extends AppCompatActivity {
         tabs.getTabAt(1).setText("Completed");
 
 
+
+        name.setText(SharePreferenceUtils.getInstance().getString("name"));
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 final Dialog dialog = new Dialog(MainActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -91,15 +95,12 @@ public class MainActivity extends AppCompatActivity {
 
                         SharePreferenceUtils.getInstance().deletePref();
 
-                        Intent intent = new Intent(MainActivity.this , SplashActivity.class);
+                        Intent intent = new Intent(MainActivity.this, SplashActivity.class);
                         startActivity(intent);
                         finishAffinity();
 
                     }
                 });
-
-
-
 
 
             }
@@ -110,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(MainActivity.this , Web.class);
-                intent.putExtra("title" ,  getString(R.string.about_us));
-                intent.putExtra("url" , "https://mrtecks.com/roshni/about.php");
+                Intent intent = new Intent(MainActivity.this, Web.class);
+                intent.putExtra("title", getString(R.string.about_us));
+                intent.putExtra("url", "https://mrtecks.com/roshni/about.php");
                 startActivity(intent);
                 drawer.closeDrawer(GravityCompat.START);
 
@@ -121,6 +122,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d("DDD","DDD");
+
+        name.setText(SharePreferenceUtils.getInstance().getString("name"));
+    }
+
 
     void toggleDrawer() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -131,10 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    class PagerAdapter extends FragmentStatePagerAdapter
-    {
-
-
+    class PagerAdapter extends FragmentStatePagerAdapter {
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -142,14 +150,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0)
-            {
+            if (position == 0) {
                 Ongoing frag = new Ongoing();
                 frag.setData(pager);
                 return frag;
-            }
-            else
-            {
+            } else {
                 return new Completed();
             }
 

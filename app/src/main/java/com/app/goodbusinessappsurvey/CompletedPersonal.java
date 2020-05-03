@@ -3,6 +3,7 @@ package com.app.goodbusinessappsurvey;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -242,6 +243,7 @@ public class CompletedPersonal extends Fragment {
         fifteento18.setAdapter(adapter5);
         goingtoschool.setAdapter(adapter5);
         proof.setAdapter(adapter6);
+
 
 
         gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

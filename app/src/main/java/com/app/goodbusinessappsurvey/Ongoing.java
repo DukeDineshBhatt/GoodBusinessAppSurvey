@@ -65,6 +65,7 @@ public class Ongoing extends Fragment {
         grid.setLayoutManager(manager);
 
 
+
         return view;
 
 
