@@ -21,7 +21,10 @@ import java.util.TimerTask;
 public class SplashActivity extends AppCompatActivity {
 
     Timer timer;
-    String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE,
+    String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
     };
@@ -68,9 +71,12 @@ public class SplashActivity extends AppCompatActivity {
                 startApp();
 
             } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
-                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+                if (
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
                 ) {
 
                     Log.d("permmm", "3");
@@ -90,7 +96,6 @@ public class SplashActivity extends AppCompatActivity {
         }
 
     }
-
 
     void startApp() {
 
