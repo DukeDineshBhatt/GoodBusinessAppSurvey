@@ -215,32 +215,32 @@ public class brand2 extends Fragment {
         upload.setVisibility(View.GONE);
         submit.setVisibility(View.GONE);
 
-        name.setEnabled(false);
+        name.setFocusable(false);
         firm.setEnabled(false);
         firmtype.setEnabled(false);
-        regi.setEnabled(false);
+        regi.setFocusable(false);
         sector.setEnabled(false);
-        person.setEnabled(false);
-        contact_details.setEnabled(false);
-        cstreet.setEnabled(false);
-        carea.setEnabled(false);
-        cdistrict.setEnabled(false);
-        cstate.setEnabled(false);
-        cpin.setEnabled(false);
-        pstreet.setEnabled(false);
-        parea.setEnabled(false);
-        pdistrict.setEnabled(false);
-        pstate.setEnabled(false);
-        ppin.setEnabled(false);
+        person.setFocusable(false);
+        contact_details.setFocusable(false);
+        cstreet.setFocusable(false);
+        carea.setFocusable(false);
+        cdistrict.setFocusable(false);
+        cstate.setFocusable(false);
+        cpin.setFocusable(false);
+        pstreet.setFocusable(false);
+        parea.setFocusable(false);
+        pdistrict.setFocusable(false);
+        pstate.setFocusable(false);
+        ppin.setFocusable(false);
         manufacturing.setEnabled(false);
-        factory.setEnabled(false);
+        factory.setFocusable(false);
         products.setEnabled(false);
         countries.setEnabled(false);
-        workers.setEnabled(false);
+        workers.setFocusable(false);
         certification.setEnabled(false);
-        expiry.setEnabled(false);
-        website.setEnabled(false);
-        email.setEnabled(false);
+        expiry.setFocusable(false);
+        website.setFocusable(false);
+        email.setFocusable(false);
 
 
         products.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_CURRENT_TOKEN);
@@ -708,9 +708,6 @@ public class brand2 extends Fragment {
 
     private void setPrevious() {
 
-
-
-
         progress.setVisibility(View.VISIBLE);
 
         Bean b = (Bean) getContext().getApplicationContext();
@@ -732,26 +729,6 @@ public class brand2 extends Fragment {
                 if (response.body().getStatus().equals("1")) {
 
                     final Data item = response.body().getData();
-
-                    if (item.getStatus().equals("pending")) {
-
-                        txtStatus.setText("YOUR PROFILE IS PENDING FOR VERIFICATION");
-                        txtStatus.setVisibility(View.VISIBLE);
-                    } else if (item.getStatus().equals("rejected")) {
-                        txtStatus.setText(item.getRejectReason());
-                        txtStatus.setVisibility(View.VISIBLE);
-                    }
-                    else if (item.getStatus().equals("submitted")) {
-                        txtStatus.setText("YOUR PROFILE IS PENDING FOR VERIFICATION");
-                        txtStatus.setVisibility(View.VISIBLE);
-                    }
-                    else if (item.getStatus().equals("modifications")) {
-                        txtStatus.setText(item.getRejectReason());
-                        txtStatus.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        txtStatus.setVisibility(View.GONE);
-                    }
 
                     name.setText(item.getName());
                     regi.setText(item.getRegistrationNumber());

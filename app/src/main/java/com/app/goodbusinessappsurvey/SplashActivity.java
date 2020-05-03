@@ -96,32 +96,25 @@ public class SplashActivity extends AppCompatActivity {
 
         final String id = SharePreferenceUtils.getInstance().getString("id");
 
-         timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
 
-if (id.length() > 0)
-{
-    Intent i = new Intent(SplashActivity.this , MainActivity.class);
-    startActivity(i);
-    finish();
-}
-else
-{
-    Intent i = new Intent(SplashActivity.this , LoginActivity.class);
-    startActivity(i);
-    finish();
-}
-
-
-
+                if (id.length() > 0) {
+                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
                 }
-            } , 1500);
-        }
 
 
-
+            }
+        }, 1500);
+    }
 
 
 }
