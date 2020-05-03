@@ -157,6 +157,14 @@ public class WorkerByIdData {
     @Expose
     private String sector_id;
 
+    @SerializedName("lat")
+    @Expose
+    private String lat;
+
+    @SerializedName("lng")
+    @Expose
+    private String lng;
+
     public String getUser_id() {
         return user_id;
     }
@@ -459,5 +467,21 @@ public class WorkerByIdData {
 
     public void setSector_id(String sector_id) {
         this.sector_id = sector_id;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

@@ -71,6 +71,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -97,7 +98,7 @@ public class Personal extends Fragment {
 
     private CircleImageView image;
 
-    private String gend, cate, reli, educ, mari, chil, belo, sixt, fift, goin, id, prf;
+    private String gend, cate, reli, educ, mari, chil, belo, sixt, fift, goin, id, prf,lat,lng;
 
     private CheckBox check;
     private File f1;
@@ -109,7 +110,7 @@ public class Personal extends Fragment {
 
     private boolean edu_bool = false;
 
-    TextView txtStatus;
+    TextView getDirection;
     private boolean che = false;
 
     private List<String> gen, cat, rel, edu, mar, chi, prof;
@@ -196,6 +197,7 @@ public class Personal extends Fragment {
         editTxtProof = view.findViewById(R.id.editTxtProf);
         editTxtRelg = view.findViewById(R.id.editTxtRelg);
         editTxtedu = view.findViewById(R.id.editTxtedu);
+        getDirection = view.findViewById(R.id.getdirection);
 
         progress = view.findViewById(R.id.progress);
         upload = view.findViewById(R.id.button7);
@@ -760,7 +762,7 @@ public class Personal extends Fragment {
                 Log.d("PD", pd);
 
                 Log.d("lat", String.valueOf(mLastKnownLocation.getLatitude()));
-                Log.d("log",String.valueOf(mLastKnownLocation.getLongitude()));
+                Log.d("log", String.valueOf(mLastKnownLocation.getLongitude()));
 
                 if (n.length() > 0) {
                     if (d.length() > 0) {
@@ -813,7 +815,7 @@ public class Personal extends Fragment {
                                                                                                                 n,
                                                                                                                 prf,
                                                                                                                 idno,
-                                                                                                                 String.valueOf(mLastKnownLocation.getLatitude()),
+                                                                                                                String.valueOf(mLastKnownLocation.getLatitude()),
                                                                                                                 String.valueOf(mLastKnownLocation.getLongitude()),
                                                                                                                 d,
                                                                                                                 gend,
@@ -944,6 +946,24 @@ public class Personal extends Fragment {
         });
 
         setPrevious();
+
+        getDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String uri = String.format(Locale.ENGLISH, "geo:"+lat +","+lng);
+                Uri gmmIntentUri = Uri.parse(uri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
+
+                Log.d("LAT",uri);
+                Log.d("LNG",lng);
+
+            }
+        });
 
         return view;
 
@@ -1237,6 +1257,9 @@ public class Personal extends Fragment {
             public void onResponse(Call<WorkerByIdListBean> call, Response<WorkerByIdListBean> response) {
 
                 List<WorkerByIdData> item = response.body().getData();
+
+                lat = item.get(0).getLat();
+                lng = item.get(0).getLng();
 
                 name.setText(item.get(0).getName());
                 DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true).resetViewBeforeLoading(false).build();

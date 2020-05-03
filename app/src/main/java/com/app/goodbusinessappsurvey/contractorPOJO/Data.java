@@ -118,6 +118,13 @@ public class Data {
     @Expose
     private String reject_reason;
 
+    @SerializedName("lat")
+    @Expose
+    private String lat;
+
+    @SerializedName("lng")
+    @Expose
+    private String lng;
 
     public String getId() {
         return id;
@@ -413,5 +420,21 @@ public class Data {
 
     public void setReject_reason(String reject_reason) {
         this.reject_reason = reject_reason;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

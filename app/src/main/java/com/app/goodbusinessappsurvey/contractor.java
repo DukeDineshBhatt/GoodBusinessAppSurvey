@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -75,6 +76,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -96,7 +98,7 @@ public class contractor extends Fragment {
 
     private Spinner gender, establishment, experience, work, availability, firm, proof, firmtype, sector;
 
-    private String gend, sect, esta, expe, wtyp, avai, frmy, prf, frmytyp;
+    private String gend, sect, esta, expe, wtyp, avai, frmy, prf, frmytyp,lat,lng;
 
     private EditText name, editTxtProof, reg_no, dob, business, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, home_based, employer, male, female, about;
 
@@ -106,6 +108,7 @@ public class contractor extends Fragment {
     private static final String TAG = "personal";
 
     CheckBox check;
+    TextView getDirection;
 
     private Button upload, submit;
 
@@ -213,6 +216,7 @@ public class contractor extends Fragment {
         firmtype = view.findViewById(R.id.firmtype);
         reg_no = view.findViewById(R.id.reg_no);
         sector = view.findViewById(R.id.sector);
+        getDirection = view.findViewById(R.id.getdirection);
 
 
         id = SharePreferenceUtils.getInstance().getString("user_id");
@@ -665,6 +669,24 @@ public class contractor extends Fragment {
 
                     }
                 });
+
+            }
+        });
+
+        getDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String uri = String.format(Locale.ENGLISH, "geo:"+lat +","+lng);
+                Uri gmmIntentUri = Uri.parse(uri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
+
+                Log.d("LAT",uri);
+                Log.d("LNG",lng);
 
             }
         });
@@ -1200,6 +1222,9 @@ public class contractor extends Fragment {
                 DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true).resetViewBeforeLoading(false).build();
                 ImageLoader loader = ImageLoader.getInstance();
                 loader.displayImage(item.getPhoto(), image, options);
+
+                lat = item.getLat();
+                lng = item.getLng();
 
                 name.setText(item.getName());
                 editTxtProof.setText(item.getId_number());

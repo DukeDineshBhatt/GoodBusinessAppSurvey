@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -76,6 +77,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -97,7 +99,7 @@ public class brand extends Fragment {
     private static final String TAG = "brand";
     private Spinner manufacturing, certification, firm, firmtype, sector;
 
-    private String manuf, certi, frmy, frmytyp, sect;
+    private String manuf, certi, frmy, frmytyp, sect,lat,lng;
 
     private EditText name, regi, person, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, factory, workers, expiry, website, email, contact_details;
 
@@ -107,6 +109,8 @@ public class brand extends Fragment {
     private CircleImageView image;
 
     CheckBox check;
+
+    TextView getDirection;
 
     private Button upload, submit;
 
@@ -210,7 +214,7 @@ public class brand extends Fragment {
         firm = view.findViewById(R.id.firm);
         firmtype = view.findViewById(R.id.firmtype);
         sector = view.findViewById(R.id.sector);
-
+        getDirection = view.findViewById(R.id.getdirection);
         progress = view.findViewById(R.id.progress);
 
         permanent = view.findViewById(R.id.permanent);
@@ -571,7 +575,6 @@ public class brand extends Fragment {
             @Override
             public void onClick(View view) {
 
-
                 String n = name.getText().toString();
                 String r = regi.getText().toString();
                 String p = person.getText().toString();
@@ -842,6 +845,24 @@ public class brand extends Fragment {
             }
         });
 
+        getDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String uri = String.format(Locale.ENGLISH, "geo:"+lat +","+lng);
+                Uri gmmIntentUri = Uri.parse(uri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
+
+                Log.d("LAT",uri);
+                Log.d("LNG",lng);
+
+            }
+        });
+
         setPrevious();
 
         return view;
@@ -1102,8 +1123,6 @@ public class brand extends Fragment {
     private void setPrevious() {
 
 
-
-
         progress.setVisibility(View.VISIBLE);
 
         Bean b = (Bean) getContext().getApplicationContext();
@@ -1126,6 +1145,8 @@ public class brand extends Fragment {
 
                     final com.app.goodbusinessappsurvey.brandDetailsPOJO.Data item = response.body().getData();
 
+                    lat = item.getLat();
+                    lng = item.getLng();
 
                     name.setText(item.getName());
                     regi.setText(item.getRegistrationNumber());
@@ -1246,15 +1267,6 @@ public class brand extends Fragment {
                 progress.setVisibility(View.GONE);
             }
         });
-
-
-
-
-
-
-
-
-
 
 
 
