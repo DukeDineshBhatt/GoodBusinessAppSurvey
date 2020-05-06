@@ -38,6 +38,8 @@
                 android:layout_gravity="center|center_vertical"
                 />
 
+
+
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
@@ -91,10 +93,10 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/white_back_round"
-                android:hint="tab to enter id number"
+                android:hint="ENTER ID NUMBER"
                 android:inputType="textPersonName"
-                android:padding="10dp" />
-
+                android:padding="10dp"
+                />
 
             <TextView
                 android:id="@+id/textView9"
@@ -163,6 +165,29 @@
                 android:hint="@string/tap_to_enter"
                 android:inputType="textPersonName"
                 android:padding="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="YOUR AGE" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/white_back_round">
+
+                <Spinner
+                    android:id="@+id/age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/textView11"
@@ -252,6 +277,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:focusable="false"
+                android:clickable="false"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/white_back_round"
                 android:hint="@string/tap_to_enter"
@@ -273,6 +300,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:focusable="false"
+                android:clickable="false"
                 android:background="@drawable/white_back_round"
                 android:hint="@string/tap_to_enter"
                 android:inputType="textPersonName"
@@ -322,7 +351,6 @@
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:id="@+id/textView27"
                     android:layout_width="wrap_content"
@@ -342,7 +370,6 @@
                     android:hint="@string/tap_to_enter"
                     android:inputType="textPostalAddress"
                     android:padding="10dp" />
-
 
                 <TextView
                     android:id="@+id/textView25"
@@ -379,6 +406,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:background="@drawable/white_back_round"
                     android:hint="@string/tap_to_enter"
                     android:inputType="textPersonName"
@@ -398,6 +427,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/white_back_round"
                     android:hint="@string/tap_to_enter"
@@ -427,7 +458,6 @@
 
 
             </LinearLayout>
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -482,11 +512,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:visibility="gone"
                 android:background="@drawable/white_back_round"
-                android:hint="@string/tap_to_enter"
+                android:hint="ENTER RELIGION"
                 android:inputType="textPostalAddress"
-                android:padding="10dp"
-                android:visibility="gone" />
+                android:padding="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -518,13 +548,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:visibility="gone"
                 android:background="@drawable/white_back_round"
                 android:hint="@string/tap_to_enter"
                 android:inputType="textPostalAddress"
-                android:padding="10dp"
-                android:visibility="gone" />
-
-
+                android:padding="10dp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -672,6 +700,7 @@
 
             </LinearLayout>
 
+
             <Button
                 android:id="@+id/submit"
                 android:layout_width="wrap_content"
@@ -679,7 +708,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/blue_stock_round"
+                android:background="@drawable/blue_back_round"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:paddingStart="20dp"
@@ -688,6 +717,9 @@
                 android:paddingBottom="8dp"
                 android:text="@string/submit"
                 android:textColor="#ffffff" />
+
+
+
 
 
         </LinearLayout>

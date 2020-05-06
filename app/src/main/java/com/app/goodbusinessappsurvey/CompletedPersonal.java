@@ -516,7 +516,7 @@ public class CompletedPersonal extends Fragment {
 
                 ImageLoader loader = ImageLoader.getInstance();
                 loader.displayImage(item.get(0).getPhoto(), image, options);
-                editTxtProof.setText(item.get(0).getId_number());
+                editTxtProof.setText(item.get(0).getIdNumber());
                 dob.setText(item.get(0).getDob());
                 cpin.setText(item.get(0).getCpin());
                 cstreet.setText(item.get(0).getCstreet());
@@ -531,7 +531,7 @@ public class CompletedPersonal extends Fragment {
 
                 int cp = 0;
                 for (int i = 0; i < prof.size(); i++) {
-                    if (item.get(0).getId_proof().equals(prof.get(i))) {
+                    if (item.get(0).getIdProof().equals(prof.get(i))) {
                         cp = i;
                     }
                 }

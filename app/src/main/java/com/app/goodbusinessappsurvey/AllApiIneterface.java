@@ -63,7 +63,8 @@ public interface AllApiIneterface {
             @Part("home") String home,
             @Part("workers") String workers,
             @Part("tools") String tools,
-            @Part("location") String location
+            @Part("location") String location,
+            @Part("bank") String bank
     );
 
     @Multipart
@@ -130,7 +131,8 @@ public interface AllApiIneterface {
             @Part("workers") String workers,
             @Part("tools") String tools,
             @Part("location") String location,
-            @Part("reason") String reason
+            @Part("reason") String reason,
+            @Part("bank") String bank
     );
 
     @GET("roshni/api/getSectors.php")
@@ -173,6 +175,7 @@ public interface AllApiIneterface {
             @Part("sixtofourteen") String sixtofourteen,
             @Part("fifteentoeighteen") String fifteentoeighteen,
             @Part("goingtoschool") String goingtoschool,
+            @Part("age") String age,
             @Part MultipartBody.Part file1
     );
 

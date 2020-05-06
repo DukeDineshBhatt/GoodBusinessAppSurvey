@@ -45,7 +45,9 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.app.goodbusinessappsurvey.verifyPOJO.Data;
 import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
+import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -66,6 +68,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,6 +78,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -91,14 +95,14 @@ import static android.app.Activity.RESULT_OK;
 public class Personal extends Fragment {
 
     private static final String TAG = "personal";
-    private Spinner gender, category, religion, educational, marital, children, below6, sixto14, fifteento18, goingtoschool, proof;
+    private Spinner gender, category, religion, educational, marital, children, below6, sixto14, fifteento18, goingtoschool, proof , age;
 
 
     private EditText name, dob, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, editTxtProof, editTxtRelg, editTxtedu;
 
     private CircleImageView image;
 
-    private String gend, cate, reli, educ, mari, chil, belo, sixt, fift, goin, id, prf,lat,lng;
+    private String gend, cate, reli, educ, mari, chil, belo, sixt, fift, goin, id, prf;
 
     private CheckBox check;
     private File f1;
@@ -110,10 +114,10 @@ public class Personal extends Fragment {
 
     private boolean edu_bool = false;
 
-    TextView getDirection;
+
     private boolean che = false;
 
-    private List<String> gen, cat, rel, edu, mar, chi, prof;
+    private List<String> gen, cat, rel, edu, mar, chi, prof , agg;
 
     private LinearLayout permanent, child;
 
@@ -128,9 +132,15 @@ public class Personal extends Fragment {
     private CustomViewPager pager;
     private boolean mLocationPermissionGranted;
 
+    TextView getDirection;
+
     void setData(CustomViewPager pager) {
         this.pager = pager;
     }
+
+    String lat = "" , lng = "";
+
+    String ag;
 
     @Nullable
     @Override
@@ -145,6 +155,7 @@ public class Personal extends Fragment {
         mar = new ArrayList<>();
         chi = new ArrayList<>();
         prof = new ArrayList<>();
+        agg = new ArrayList<>();
 
         Places.initialize(getContext().getApplicationContext(), getString(R.string.google_maps_key));
         mPlacesClient = Places.createClient(getContext());
@@ -163,6 +174,9 @@ public class Personal extends Fragment {
                         if (location != null) {
                             // Logic to handle location object
                             mLastKnownLocation = location;
+                            lat = String.valueOf(mLastKnownLocation.getLatitude());
+                            lng = String.valueOf(mLastKnownLocation.getLongitude());
+
                             Log.d("location", String.valueOf(mLastKnownLocation.getLatitude()));
                         }
 
@@ -183,6 +197,7 @@ public class Personal extends Fragment {
         }
 
         name = view.findViewById(R.id.editText);
+        age = view.findViewById(R.id.age);
         dob = view.findViewById(R.id.editText2);
         cpin = view.findViewById(R.id.editText3);
         cstate = view.findViewById(R.id.editText4);
@@ -226,24 +241,25 @@ public class Personal extends Fragment {
         proof = view.findViewById(R.id.proof);
 
 
-        gen.add("Select one --- ");
         gen.add("Male");
         gen.add("Female");
 
-        cat.add("Select one --- ");
+        for (int i = 14 ; i <= 100 ; i++)
+        {
+            agg.add("" + i);
+        }
+
         cat.add("SC");
         cat.add("ST");
         cat.add("OBC");
         cat.add("General");
 
-        rel.add("Select one --- ");
         rel.add("Hindu");
         rel.add("Muslim");
         rel.add("Sikh");
         rel.add("Christian");
         rel.add("Others");
 
-        edu.add("Select one --- ");
         edu.add("Uneducated");
         edu.add("Primary (Class 1-5)");
         edu.add("Middle (Class 6-8)");
@@ -253,13 +269,11 @@ public class Personal extends Fragment {
         edu.add("Post Graduation");
         edu.add("Others");
 
-        mar.add("Select one --- ");
         mar.add("Single");
         mar.add("Married");
         mar.add("Divorcee");
         mar.add("Separated");
 
-        chi.add("Select one --- ");
         chi.add("0");
         chi.add("1");
         chi.add("2");
@@ -274,7 +288,6 @@ public class Personal extends Fragment {
         chi.add("11");
         chi.add("12");
 
-        prof.add("Select one --- ");
         prof.add("Aadhaar Card");
         prof.add("Voter ID");
         prof.add("PAN Card");
@@ -306,6 +319,9 @@ public class Personal extends Fragment {
         ArrayAdapter<String> adapter6 = new ArrayAdapter<>(getContext(),
                 R.layout.spinner_model, prof);
 
+        ArrayAdapter<String> adapter7 = new ArrayAdapter<>(getContext(),
+                R.layout.spinner_model, agg);
+
         gender.setAdapter(adapter);
         category.setAdapter(adapter1);
         religion.setAdapter(adapter2);
@@ -317,9 +333,9 @@ public class Personal extends Fragment {
         fifteento18.setAdapter(adapter5);
         goingtoschool.setAdapter(adapter5);
         proof.setAdapter(adapter6);
+        age.setAdapter(adapter7);
 
-
-        cstate.setOnClickListener(new View.OnClickListener() {
+       /* cstate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -332,7 +348,7 @@ public class Personal extends Fragment {
                 startActivityForResult(intent, 11);
 
             }
-        });
+        });*/
 
         cdistrict.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,7 +365,7 @@ public class Personal extends Fragment {
             }
         });
 
-        pstate.setOnClickListener(new View.OnClickListener() {
+       /* pstate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -362,7 +378,7 @@ public class Personal extends Fragment {
                 startActivityForResult(intent, 13);
 
             }
-        });
+        });*/
 
         pdistrict.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -379,18 +395,22 @@ public class Personal extends Fragment {
             }
         });
 
-
         gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                gend = gen.get(i);
+            }
 
-                if (i > 0) {
-                    gend = gen.get(i);
-                } else {
-                    gend = "";
-                }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
 
+        age.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ag = agg.get(i);
             }
 
             @Override
@@ -402,13 +422,7 @@ public class Personal extends Fragment {
         category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    cate = cat.get(i);
-                } else {
-                    cate = "";
-                }
-
-
+                cate = cat.get(i);
             }
 
             @Override
@@ -423,19 +437,13 @@ public class Personal extends Fragment {
 
                 reli = rel.get(i);
 
-                if (i == 5) {
-
+                if (reli.equals("Others")) {
                     rel_bool = true;
 
                     editTxtRelg.setVisibility(View.VISIBLE);
-
-
                 } else {
-
                     rel_bool = false;
                     editTxtRelg.setVisibility(View.GONE);
-
-
                 }
             }
 
@@ -451,18 +459,12 @@ public class Personal extends Fragment {
 
                 educ = edu.get(i);
 
-                if (i != 8) {
-
+                if (educ.equals("Others")) {
+                    edu_bool = true;
+                    editTxtedu.setVisibility(View.VISIBLE);
+                } else {
                     edu_bool = false;
                     editTxtedu.setVisibility(View.GONE);
-
-                } else {
-
-                    edu_bool = true;
-
-                    editTxtedu.setVisibility(View.VISIBLE);
-
-
                 }
 
             }
@@ -476,24 +478,21 @@ public class Personal extends Fragment {
         marital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    mari = mar.get(i);
+                mari = mar.get(i);
 
-                    if (mari.equals("Single")) {
-                        child.setVisibility(View.GONE);
+                if (mari.equals("Single")) {
+                    child.setVisibility(View.GONE);
 
-                        chil = "0";
-                        belo = "0";
-                        sixt = "0";
-                        fift = "0";
-                        goin = "0";
+                    chil = "0";
+                    belo = "0";
+                    sixt = "0";
+                    fift = "0";
+                    goin = "0";
 
-                    } else {
-                        child.setVisibility(View.VISIBLE);
-                    }
                 } else {
-                    mari = "";
+                    child.setVisibility(View.VISIBLE);
                 }
+
 
             }
 
@@ -506,13 +505,7 @@ public class Personal extends Fragment {
         children.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    chil = chi.get(i);
-                } else {
-                    chil = "";
-                }
-
-
+                chil = chi.get(i);
             }
 
             @Override
@@ -524,13 +517,7 @@ public class Personal extends Fragment {
         below6.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    belo = chi.get(i);
-                } else {
-                    belo = "";
-                }
-
-
+                belo = chi.get(i);
             }
 
             @Override
@@ -542,13 +529,7 @@ public class Personal extends Fragment {
         sixto14.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    sixt = chi.get(i);
-                } else {
-                    sixt = "";
-                }
-
-
+                sixt = chi.get(i);
             }
 
             @Override
@@ -560,13 +541,7 @@ public class Personal extends Fragment {
         fifteento18.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    fift = chi.get(i);
-                } else {
-                    fift = "";
-                }
-
-
+                fift = chi.get(i);
             }
 
             @Override
@@ -578,13 +553,7 @@ public class Personal extends Fragment {
         goingtoschool.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    goin = chi.get(i);
-                } else {
-                    goin = "";
-                }
-
-
+                goin = chi.get(i);
             }
 
             @Override
@@ -596,17 +565,7 @@ public class Personal extends Fragment {
         proof.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i > 0) {
-
-                    prf = prof.get(i);
-
-                } else {
-
-                    prf = "";
-
-                }
-
+                prf = prof.get(i);
             }
 
             @Override
@@ -682,11 +641,40 @@ public class Personal extends Fragment {
             }
         });
 
+
         dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
+                new SingleDateAndTimePickerDialog.Builder(getActivity())
+                        //.bottomSheet()
+                        .curved()
+                        .displayMinutes(false)
+                        .displayHours(false)
+                        .displayDays(false)
+                        .displayMonth(true)
+                        .displayYears(true)
+                        .displayDaysOfMonth(true)
+                        .listener(new SingleDateAndTimePickerDialog.Listener() {
+                            @Override
+                            public void onDateSelected(Date date) {
+
+                                //date.getTime();
+
+                                Date dt = new Date(date.getTime());
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                                String dd = sdf.format(dt);
+
+
+                                Log.d("dddd", dd);
+
+                                dob.setText(dd);
+
+                            }
+                        })
+                        .display();
+
+                /*final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dob_popup);
                 dialog.setCancelable(true);
@@ -709,7 +697,7 @@ public class Personal extends Fragment {
 
                     }
                 });
-
+*/
             }
         });
 
@@ -747,188 +735,186 @@ public class Personal extends Fragment {
                 }
 
                 if (rel_bool) {
-
                     reli = editTxtRelg.getText().toString();
                 }
 
                 if (edu_bool) {
-
                     educ = editTxtedu.getText().toString();
                 }
 
-                Log.d("CS", cs);
-                Log.d("CD", cd);
-                Log.d("PS", ps);
-                Log.d("PD", pd);
-
-                Log.d("lat", String.valueOf(mLastKnownLocation.getLatitude()));
-                Log.d("log", String.valueOf(mLastKnownLocation.getLongitude()));
 
                 if (n.length() > 0) {
                     if (d.length() > 0) {
                         if (gend.length() > 0) {
-                            if (cp.length() > 0) {
-                                if (cs.length() > 0) {
+                            if (cst.length() > 0) {
+                                if (ca.length() > 0) {
                                     if (cd.length() > 0) {
-                                        if (ca.length() > 0) {
-                                            if (cst.length() > 0) {
-                                                if (pp.length() > 0) {
-                                                    if (ps.length() > 0) {
+                                        if (cs.length() > 0) {
+                                            if (cp.length() > 0) {
+                                                if (pst.length() > 0) {
+                                                    if (pa.length() > 0) {
                                                         if (pd.length() > 0) {
-                                                            if (pa.length() > 0) {
-                                                                if (pst.length() > 0) {
-                                                                    if (cate.length() > 0) {
-                                                                        if (reli.length() > 0) {
-                                                                            if (educ.length() > 0) {
-                                                                                if (mari.length() > 0) {
-                                                                                    if (chil.length() > 0) {
-                                                                                        if (belo.length() > 0) {
-                                                                                            if (sixt.length() > 0) {
-                                                                                                if (fift.length() > 0) {
-                                                                                                    if (goin.length() > 0) {
-
-                                                                                                        MultipartBody.Part body = null;
-                                                                                                        try {
-
-                                                                                                            RequestBody reqFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), f1);
-                                                                                                            body = MultipartBody.Part.createFormData("photo", f1.getName(), reqFile1);
+                                                            if (ps.length() > 0) {
+                                                                if (pp.length() > 0) {
 
 
-                                                                                                        } catch (Exception e1) {
-                                                                                                            e1.printStackTrace();
-                                                                                                        }
+                                                                    MultipartBody.Part body = null;
+                                                                    try {
 
-                                                                                                        progress.setVisibility(View.VISIBLE);
-
-                                                                                                        Bean b = (Bean) Objects.requireNonNull(getContext()).getApplicationContext();
-
-                                                                                                        Retrofit retrofit = new Retrofit.Builder()
-                                                                                                                .baseUrl(b.baseurl)
-                                                                                                                .addConverterFactory(ScalarsConverterFactory.create())
-                                                                                                                .addConverterFactory(GsonConverterFactory.create())
-                                                                                                                .build();
-
-                                                                                                        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
-
-                                                                                                        Call<verifyBean> call = cr.updateWorkerPersonal(
-                                                                                                                id,
-                                                                                                                n,
-                                                                                                                prf,
-                                                                                                                idno,
-                                                                                                                String.valueOf(mLastKnownLocation.getLatitude()),
-                                                                                                                String.valueOf(mLastKnownLocation.getLongitude()),
-                                                                                                                d,
-                                                                                                                gend,
-                                                                                                                cp,
-                                                                                                                cs,
-                                                                                                                cd,
-                                                                                                                ca,
-                                                                                                                cst,
-                                                                                                                pp,
-                                                                                                                ps,
-                                                                                                                pd,
-                                                                                                                pa,
-                                                                                                                pst,
-                                                                                                                cate,
-                                                                                                                reli,
-                                                                                                                educ,
-                                                                                                                mari,
-                                                                                                                chil,
-                                                                                                                belo,
-                                                                                                                sixt,
-                                                                                                                fift,
-                                                                                                                goin,
-                                                                                                                body
-                                                                                                        );
-
-                                                                                                        call.enqueue(new Callback<verifyBean>() {
-                                                                                                            @Override
-                                                                                                            public void onResponse(Call<verifyBean> call, Response<verifyBean> response) {
-
-                                                                                                                assert response.body() != null;
-                                                                                                                if (response.body().getStatus().equals("1")) {
-
-                                                                                                                    Intent registrationComplete = new Intent("photo");
-
-                                                                                                                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(registrationComplete);
-
-                                                                                                                    pager.setCurrentItem(1);
+                                                                        RequestBody reqFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), f1);
+                                                                        body = MultipartBody.Part.createFormData("photo", f1.getName(), reqFile1);
 
 
-                                                                                                                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                                                                } else {
-                                                                                                                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                                                                }
-
-
-                                                                                                                progress.setVisibility(View.GONE);
-
-
-                                                                                                            }
-
-                                                                                                            @Override
-                                                                                                            public void onFailure(Call<verifyBean> call, Throwable t) {
-                                                                                                                progress.setVisibility(View.GONE);
-                                                                                                            }
-                                                                                                        });
-
-                                                                                                    } else {
-                                                                                                        Toast.makeText(getActivity(), "Invalid no. of children", Toast.LENGTH_SHORT).show();
-                                                                                                    }
-                                                                                                } else {
-                                                                                                    Toast.makeText(getActivity(), "Invalid no. of children", Toast.LENGTH_SHORT).show();
-                                                                                                }
-                                                                                            } else {
-                                                                                                Toast.makeText(getActivity(), "Invalid no. of children", Toast.LENGTH_SHORT).show();
-                                                                                            }
-                                                                                        } else {
-                                                                                            Toast.makeText(getActivity(), "Invalid no. of children", Toast.LENGTH_SHORT).show();
-                                                                                        }
-                                                                                    } else {
-                                                                                        Toast.makeText(getActivity(), "Invalid no. of children", Toast.LENGTH_SHORT).show();
-                                                                                    }
-                                                                                } else {
-                                                                                    Toast.makeText(getActivity(), "Invalid marital status", Toast.LENGTH_SHORT).show();
-                                                                                }
-                                                                            } else {
-                                                                                Toast.makeText(getActivity(), "Invalid educational status", Toast.LENGTH_SHORT).show();
-                                                                            }
-                                                                        } else {
-                                                                            Toast.makeText(getActivity(), "Invalid religion", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    } else {
-                                                                        Toast.makeText(getActivity(), "Invalid category", Toast.LENGTH_SHORT).show();
+                                                                    } catch (Exception e1) {
+                                                                        e1.printStackTrace();
                                                                     }
+
+                                                                    progress.setVisibility(View.VISIBLE);
+
+                                                                    Bean b = (Bean) Objects.requireNonNull(getContext()).getApplicationContext();
+
+                                                                    Retrofit retrofit = new Retrofit.Builder()
+                                                                            .baseUrl(b.baseurl)
+                                                                            .addConverterFactory(ScalarsConverterFactory.create())
+                                                                            .addConverterFactory(GsonConverterFactory.create())
+                                                                            .build();
+
+                                                                    AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                                                                    Call<verifyBean> call = cr.updateWorkerPersonal(
+                                                                            SharePreferenceUtils.getInstance().getString("user_id"),
+                                                                            n,
+                                                                            prf,
+                                                                            idno,
+                                                                            lat,
+                                                                            lng,
+                                                                            d,
+                                                                            gend,
+                                                                            cp,
+                                                                            cs,
+                                                                            cd,
+                                                                            ca,
+                                                                            cst,
+                                                                            pp,
+                                                                            ps,
+                                                                            pd,
+                                                                            pa,
+                                                                            pst,
+                                                                            cate,
+                                                                            reli,
+                                                                            educ,
+                                                                            mari,
+                                                                            chil,
+                                                                            belo,
+                                                                            sixt,
+                                                                            fift,
+                                                                            goin,
+                                                                            ag,
+                                                                            body
+                                                                    );
+
+                                                                    call.enqueue(new Callback<verifyBean>() {
+                                                                        @Override
+                                                                        public void onResponse(Call<verifyBean> call, Response<verifyBean> response) {
+
+                                                                            assert response.body() != null;
+                                                                            if (response.body().getStatus().equals("1")) {
+                                                                                Data item = response.body().getData();
+
+                                                                                SharePreferenceUtils.getInstance().saveString("name", item.getName());
+                                                                                SharePreferenceUtils.getInstance().saveString("photo", item.getPhoto());
+                                                                                SharePreferenceUtils.getInstance().saveString("dob", item.getDob());
+                                                                                SharePreferenceUtils.getInstance().saveString("gender", item.getGender());
+                                                                                SharePreferenceUtils.getInstance().saveString("phone", item.getPhone());
+                                                                                SharePreferenceUtils.getInstance().saveString("cpin", item.getCpin());
+                                                                                SharePreferenceUtils.getInstance().saveString("cstate", item.getCstate());
+                                                                                SharePreferenceUtils.getInstance().saveString("cdistrict", item.getCdistrict());
+                                                                                SharePreferenceUtils.getInstance().saveString("carea", item.getCarea());
+                                                                                SharePreferenceUtils.getInstance().saveString("cstreet", item.getCstreet());
+                                                                                SharePreferenceUtils.getInstance().saveString("ppin", item.getPpin());
+                                                                                SharePreferenceUtils.getInstance().saveString("pstate", item.getPstate());
+                                                                                SharePreferenceUtils.getInstance().saveString("pdistrict", item.getPdistrict());
+                                                                                SharePreferenceUtils.getInstance().saveString("parea", item.getParea());
+                                                                                SharePreferenceUtils.getInstance().saveString("pstreet", item.getPstreet());
+                                                                                SharePreferenceUtils.getInstance().saveString("category", item.getCategory());
+                                                                                SharePreferenceUtils.getInstance().saveString("religion", item.getReligion());
+                                                                                SharePreferenceUtils.getInstance().saveString("educational", item.getEducational());
+                                                                                SharePreferenceUtils.getInstance().saveString("marital", item.getMarital());
+                                                                                SharePreferenceUtils.getInstance().saveString("children", item.getChildren());
+                                                                                SharePreferenceUtils.getInstance().saveString("belowsix", item.getBelowsix());
+                                                                                SharePreferenceUtils.getInstance().saveString("sixtofourteen", item.getSixtofourteen());
+                                                                                SharePreferenceUtils.getInstance().saveString("fifteentoeighteen", item.getFifteentoeighteen());
+                                                                                SharePreferenceUtils.getInstance().saveString("goingtoschool", item.getGoingtoschool());
+                                                                                SharePreferenceUtils.getInstance().saveString("sector", item.getSector());
+                                                                                SharePreferenceUtils.getInstance().saveString("skills", item.getSkills());
+                                                                                SharePreferenceUtils.getInstance().saveString("experience", item.getExperience());
+                                                                                SharePreferenceUtils.getInstance().saveString("employment", item.getEmployment());
+                                                                                SharePreferenceUtils.getInstance().saveString("employer", item.getEmployer());
+                                                                                SharePreferenceUtils.getInstance().saveString("home", item.getHome());
+                                                                                SharePreferenceUtils.getInstance().saveString("workers", item.getWorkers());
+                                                                                SharePreferenceUtils.getInstance().saveString("tools", item.getTools());
+                                                                                SharePreferenceUtils.getInstance().saveString("location", item.getLocation());
+                                                                                SharePreferenceUtils.getInstance().saveString("idproof", item.getId_proof());
+                                                                                SharePreferenceUtils.getInstance().saveString("idproofnumber", item.getId_number());
+                                                                                SharePreferenceUtils.getInstance().saveString("status", item.getStatus());
+
+                                                                                Intent registrationComplete = new Intent("photo");
+
+                                                                                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(registrationComplete);
+
+                                                                                pager.setCurrentItem(1);
+
+
+                                                                                Log.d("respo", response.body().getMessage());
+
+                                                                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                            } else {
+                                                                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                            }
+
+
+                                                                            progress.setVisibility(View.GONE);
+
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onFailure(Call<verifyBean> call, Throwable t) {
+                                                                            progress.setVisibility(View.GONE);
+                                                                        }
+                                                                    });
+
+
                                                                 } else {
-                                                                    Toast.makeText(getContext(), "Invalid permanent street", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(getContext(), "Invalid permanent PIN", Toast.LENGTH_SHORT).show();
                                                                 }
                                                             } else {
-                                                                Toast.makeText(getContext(), "Invalid permanent area", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(getContext(), "Invalid permanent state", Toast.LENGTH_SHORT).show();
                                                             }
                                                         } else {
                                                             Toast.makeText(getContext(), "Invalid permanent district", Toast.LENGTH_SHORT).show();
                                                         }
                                                     } else {
-                                                        Toast.makeText(getContext(), "Invalid permanent state", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getContext(), "Invalid permanent area", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } else {
-                                                    Toast.makeText(getContext(), "Invalid permanent PIN", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Invalid permanent street", Toast.LENGTH_SHORT).show();
                                                 }
 
                                             } else {
-                                                Toast.makeText(getContext(), "Invalid current street", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), "Invalid current PIN", Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(getContext(), "Invalid current area", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Invalid current state", Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
                                         Toast.makeText(getContext(), "Invalid current district", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    Toast.makeText(getContext(), "Invalid current state", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Invalid current area", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Invalid current PIN", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Invalid current street", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(getContext(), "Invalid gender", Toast.LENGTH_SHORT).show();
@@ -944,6 +930,7 @@ public class Personal extends Fragment {
             }
 
         });
+
 
         setPrevious();
 
@@ -968,6 +955,9 @@ public class Personal extends Fragment {
         return view;
 
     }
+
+
+
 
     private void getLocationPermission() {
         /*
@@ -997,20 +987,39 @@ public class Personal extends Fragment {
 
             String ypath = getPath(getContext(), uri);
             assert ypath != null;
-            f1 = new File(ypath);
-
-            Log.d("path", ypath);
 
 
-            ImageLoader loader = ImageLoader.getInstance();
+            File file = null;
+            file = new File(ypath);
 
-            Bitmap bmp = loader.loadImageSync(String.valueOf(uri));
+            try {
+                f1 = new Compressor(getContext()).compressToFile(file);
 
-            Log.d("bitmap", String.valueOf(bmp));
+                uri = Uri.fromFile(f1);
 
-            image.setImageBitmap(bmp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("path1", ypath);
+
+            image.setImageURI(uri);
 
         } else if (requestCode == 1 && resultCode == RESULT_OK) {
+            Log.d("uri1", String.valueOf(uri));
+
+            try {
+
+                File file = new Compressor(getContext()).compressToFile(f1);
+
+                f1 = file;
+
+                uri = Uri.fromFile(f1);
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
             image.setImageURI(uri);
         }
 
@@ -1266,7 +1275,7 @@ public class Personal extends Fragment {
 
                 ImageLoader loader = ImageLoader.getInstance();
                 loader.displayImage(item.get(0).getPhoto(), image, options);
-                editTxtProof.setText(item.get(0).getId_number());
+                editTxtProof.setText(item.get(0).getIdNumber());
                 dob.setText(item.get(0).getDob());
                 cpin.setText(item.get(0).getCpin());
                 cstreet.setText(item.get(0).getCstreet());
@@ -1279,9 +1288,17 @@ public class Personal extends Fragment {
                 pdistrict.setText(item.get(0).getPdistrict());
                 pstate.setText(item.get(0).getPstate());
 
+                int cp12 = 0;
+                for (int i = 0; i < agg.size(); i++) {
+                    if (item.get(0).getAge().equals(agg.get(i))) {
+                        cp12 = i;
+                    }
+                }
+                age.setSelection(cp12);
+
                 int cp = 0;
                 for (int i = 0; i < prof.size(); i++) {
-                    if (item.get(0).getId_proof().equals(prof.get(i))) {
+                    if (item.get(0).getIdProof().equals(prof.get(i))) {
                         cp = i;
                     }
                 }
