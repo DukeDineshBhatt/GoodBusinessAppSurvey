@@ -139,6 +139,7 @@ public class contractor extends Fragment {
     String id;
 
     String lat = "" , lng = "";
+    String lat1 = "" , lng1 = "";
 
     void setData(CustomViewPager pager) {
         this.pager = pager;
@@ -180,8 +181,8 @@ public class contractor extends Fragment {
                             // Logic to handle location object
                             mLastKnownLocation = location;
 
-                            lat = String.valueOf(mLastKnownLocation.getLatitude());
-                            lng = String.valueOf(mLastKnownLocation.getLongitude());
+                            lat1 = String.valueOf(mLastKnownLocation.getLatitude());
+                            lng1 = String.valueOf(mLastKnownLocation.getLongitude());
 
                             Log.d("location", String.valueOf(mLastKnownLocation.getLatitude()));
                         }
@@ -767,8 +768,8 @@ public class contractor extends Fragment {
                                                                                                         frmy,
                                                                                                         frmytyp,
                                                                                                         r,
-                                                                                                        lat,
-                                                                                                        lng,
+                                                                                                        lat1,
+                                                                                                        lng1,
                                                                                                         d,
                                                                                                         gend,
                                                                                                         b,

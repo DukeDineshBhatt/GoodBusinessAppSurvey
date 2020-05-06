@@ -81,6 +81,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -99,7 +100,7 @@ public class brand extends Fragment {
     private static final String TAG = "brand";
     private Spinner manufacturing, certification, firm, firmtype, sector;
 
-    private String manuf, certi, frmy, frmytyp, sect,lat,lng;
+    private String manuf, certi, frmy, frmytyp, sect;
 
     private EditText name, regi, person, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, factory, workers, expiry, website, email, contact_details;
 
@@ -127,6 +128,8 @@ public class brand extends Fragment {
 
     private ProgressBar progress;
 
+    String lat1 = "" , lng1 = "";
+    String lat = "" , lng = "";
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
@@ -171,6 +174,8 @@ public class brand extends Fragment {
                         if (location != null) {
                             // Logic to handle location object
                             mLastKnownLocation = location;
+                            lat1 = String.valueOf(mLastKnownLocation.getLatitude());
+                            lng1 = String.valueOf(mLastKnownLocation.getLongitude());
                             Log.d("location", String.valueOf(mLastKnownLocation.getLatitude()));
                         }
 
@@ -241,7 +246,7 @@ public class brand extends Fragment {
         countries.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_CURRENT_TOKEN);
         countries.addChipTerminator(',', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_CURRENT_TOKEN);
 
-        cstate.setOnClickListener(new View.OnClickListener() {
+        /* cstate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -254,7 +259,7 @@ public class brand extends Fragment {
                 startActivityForResult(intent, 11);
 
             }
-        });
+        });*/
 
         cdistrict.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,7 +276,7 @@ public class brand extends Fragment {
             }
         });
 
-        pstate.setOnClickListener(new View.OnClickListener() {
+       /* pstate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -284,7 +289,7 @@ public class brand extends Fragment {
                 startActivityForResult(intent, 13);
 
             }
-        });
+        });*/
 
         pdistrict.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -677,8 +682,8 @@ public class brand extends Fragment {
                                                                                                 frmy,
                                                                                                 frmytyp,
                                                                                                 r,
-                                                                                                String.valueOf(mLastKnownLocation.getLatitude()),
-                                                                                                String.valueOf(mLastKnownLocation.getLongitude()),
+                                                                                                lat1,
+                                                                                                lng1,
                                                                                                 sect,
                                                                                                 cde,
                                                                                                 p,
@@ -880,7 +885,26 @@ public class brand extends Fragment {
 
             String ypath = getPath(getContext(), uri);
             assert ypath != null;
-            f1 = new File(ypath);
+
+
+            File file = null;
+            file = new File(ypath);
+
+            try {
+                f1 = new Compressor(getContext()).compressToFile(file);
+
+                uri = Uri.fromFile(f1);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("path1", ypath);
+
+            image.setImageURI(uri);
+
+
+            /*f1 = new File(ypath);
 
             Log.d("path", ypath);
 
@@ -891,9 +915,24 @@ public class brand extends Fragment {
 
             Log.d("bitmap", String.valueOf(bmp));
 
-            image.setImageBitmap(bmp);
+            image.setImageBitmap(bmp);*/
 
         } else if (requestCode == 1 && resultCode == RESULT_OK) {
+
+            Log.d("uri1", String.valueOf(uri));
+
+            try {
+
+                File file = new Compressor(getContext()).compressToFile(f1);
+
+                f1 = file;
+
+                uri = Uri.fromFile(f1);
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
             image.setImageURI(uri);
         }
 
@@ -933,8 +972,10 @@ public class brand extends Fragment {
                     List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
                     Log.d("addresss", String.valueOf(addresses.get(0)));
                     String cii = addresses.get(0).getLocality();
+                    String stat = addresses.get(0).getAdminArea();
 
                     cdistrict.setText(cii);
+                    cstate.setText(stat);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -986,9 +1027,9 @@ public class brand extends Fragment {
                 try {
                     List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
                     String cii = addresses.get(0).getSubLocality();
-
+                    String stat = addresses.get(0).getAdminArea();
                     pdistrict.setText(cii);
-
+                    pstate.setText(stat);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

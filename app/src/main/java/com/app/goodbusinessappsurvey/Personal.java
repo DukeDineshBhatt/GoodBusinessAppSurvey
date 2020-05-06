@@ -139,6 +139,7 @@ public class Personal extends Fragment {
     }
 
     String lat = "" , lng = "";
+    String lat1 = "" , lng1 = "";
 
     String ag;
 
@@ -174,8 +175,8 @@ public class Personal extends Fragment {
                         if (location != null) {
                             // Logic to handle location object
                             mLastKnownLocation = location;
-                            lat = String.valueOf(mLastKnownLocation.getLatitude());
-                            lng = String.valueOf(mLastKnownLocation.getLongitude());
+                            lat1 = String.valueOf(mLastKnownLocation.getLatitude());
+                            lng1 = String.valueOf(mLastKnownLocation.getLongitude());
 
                             Log.d("location", String.valueOf(mLastKnownLocation.getLatitude()));
                         }
@@ -786,8 +787,8 @@ public class Personal extends Fragment {
                                                                             n,
                                                                             prf,
                                                                             idno,
-                                                                            lat,
-                                                                            lng,
+                                                                            lat1,
+                                                                            lng1,
                                                                             d,
                                                                             gend,
                                                                             cp,

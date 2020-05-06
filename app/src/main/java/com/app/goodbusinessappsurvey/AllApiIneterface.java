@@ -220,7 +220,7 @@ public interface AllApiIneterface {
     );
 
     @Multipart
-    @POST("roshni/api/update_brand.php")
+    @POST("roshni/api/update_brand2.php")
     Call<verifyBean> updateBrand(
             @Part("user_id") String user_id,
             @Part("name") String name,
