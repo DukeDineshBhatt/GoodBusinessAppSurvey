@@ -39,11 +39,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ContractorPersonalProfile extends Fragment {
 
-    private Spinner gender, establishment, experience, work, availability, firm, proof, firmtype,sector;
+    private Spinner gender, establishment, experience, availability, firm, proof, firmtype,sector;
 
     private String gend, esta, expe, wtyp, avai, frmy, prf, frmytyp,sect;
 
-    private EditText name, editTxtProof, reg_no, dob, business, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, home_based, employer, male, female, about;
+    private EditText name, editTxtProof, reg_no, dob, business, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, home_based, employer, male, female, about , work;
 
     TagsEditText location;
     TextView txtStatus;
@@ -114,11 +114,9 @@ public class ContractorPersonalProfile extends Fragment {
         user_id = SharePreferenceUtils.getInstance().getString("user_id");
 
         Log.d("IDD",user_id);
-        gen.add("Select one --- ");
         gen.add("Male");
         gen.add("Female");
 
-        prof.add("Select one --- ");
         prof.add("Aadhaar Card");
         prof.add("Voter ID");
         prof.add("PAN Card");
@@ -126,7 +124,6 @@ public class ContractorPersonalProfile extends Fragment {
         prof.add("Passport");
         prof.add("Bank passbook");
 
-        est.add("Select one --- ");
         est.add("1970");
         est.add("1971");
         est.add("1972");
@@ -184,18 +181,15 @@ public class ContractorPersonalProfile extends Fragment {
         est.add("2024");
         est.add("2025");
 
-        exp.add("Select one --- ");
         exp.add("0 to 2 years");
         exp.add("3 to 5 years");
         exp.add("5 to 10 years");
         exp.add("more than 10 years");
 
-        ava.add("Select one --- ");
         ava.add("Available");
         ava.add("Within a Month");
         ava.add("Within Two Months");
 
-        frm.add("Select one --- ");
         frm.add("Sole-properietor");
         frm.add("Partnership");
         frm.add("Pvt.Ltd. Company");
@@ -205,7 +199,6 @@ public class ContractorPersonalProfile extends Fragment {
         frm.add("Co-operative");
         frm.add("Trust");
 
-        frmtyp.add("Select one --- ");
         frmtyp.add("SSI");
         frmtyp.add("MSME");
         frmtyp.add("Cottage Industry");
@@ -248,7 +241,6 @@ public class ContractorPersonalProfile extends Fragment {
         gender.setEnabled(false);
         establishment.setEnabled(false);
         experience.setEnabled(false);
-        work.setEnabled(false);
         availability.setEnabled(false);
         firm.setEnabled(false);
         proof.setEnabled(false);
@@ -259,7 +251,7 @@ public class ContractorPersonalProfile extends Fragment {
         gender.setAdapter(adapter);
         establishment.setAdapter(adapter1);
         experience.setAdapter(adapter2);
-        work.setAdapter(adapter3);
+
         availability.setAdapter(adapter4);
         firm.setAdapter(adapter5);
         proof.setAdapter(adapter6);
@@ -271,11 +263,7 @@ public class ContractorPersonalProfile extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     gend = gen.get(i);
-                } else {
-                    gend = "";
-                }
 
             }
 
@@ -289,15 +277,10 @@ public class ContractorPersonalProfile extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
 
                     prf = prof.get(i);
 
-                } else {
 
-                    prf = "";
-
-                }
             }
 
             @Override
@@ -310,11 +293,7 @@ public class ContractorPersonalProfile extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     frmy = frm.get(i);
-                } else {
-                    frmy = "";
-                }
 
             }
 
@@ -328,11 +307,7 @@ public class ContractorPersonalProfile extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     frmytyp = frmtyp.get(i);
-                } else {
-                    frmytyp = "";
-                }
 
             }
 
@@ -345,11 +320,7 @@ public class ContractorPersonalProfile extends Fragment {
         establishment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
                     esta = est.get(i);
-                } else {
-                    esta = "";
-                }
 
             }
 
@@ -363,11 +334,7 @@ public class ContractorPersonalProfile extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     expe = exp.get(i);
-                } else {
-                    expe = "";
-                }
 
             }
 
@@ -378,33 +345,12 @@ public class ContractorPersonalProfile extends Fragment {
         });
 
 
-        work.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i > 0) {
-                    wtyp = wty.get(i);
-                } else {
-                    wtyp = "";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         availability.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     avai = ava.get(i);
-                } else {
-                    avai = "";
-                }
 
             }
 
@@ -456,7 +402,7 @@ public class ContractorPersonalProfile extends Fragment {
                 //fw = item.getWorkersFemale();
 
                 name.setText(item.getName());
-                editTxtProof.setText(item.getId_number());
+                editTxtProof.setText(item.getIdNumber());
                 cstreet.setText(item.getCstreet());
                 carea.setText(item.getCarea());
                 cdistrict.setText(item.getCdistrict());
@@ -467,8 +413,9 @@ public class ContractorPersonalProfile extends Fragment {
                 pdistrict.setText(item.getPdistrict());
                 pstate.setText(item.getPstate());
                 ppin.setText(item.getPpin());
+                work.setText(item.getWorkType());
 
-                reg_no.setText(item.getRegistration_no());
+                reg_no.setText(item.getRegistrationNo());
 
                 //experience.setText(item.getExperience());
                 //availability.setText(item.getAvailability());
@@ -480,7 +427,7 @@ public class ContractorPersonalProfile extends Fragment {
                 //type.setText(item.getWorkType());
                 employer.setText(item.getEmployer());
                 about.setText(item.getAbout());
-                business.setText(item.getBusiness_name());
+                business.setText(item.getBusinessName());
 
 
                 int gp = 0;
@@ -493,7 +440,7 @@ public class ContractorPersonalProfile extends Fragment {
 
                 int fm = 0;
                 for (int i = 0; i < frm.size(); i++) {
-                    if (item.getFirm_type().equals(frm.get(i))) {
+                    if (item.getFirmType().equals(frm.get(i))) {
                         fm = i;
                     }
                 }
@@ -501,7 +448,7 @@ public class ContractorPersonalProfile extends Fragment {
 
                 int pf = 0;
                 for (int i = 0; i < prof.size(); i++) {
-                    if (item.getId_proof().equals(prof.get(i))) {
+                    if (item.getIdProof().equals(prof.get(i))) {
                         pf = i;
                     }
                 }
@@ -509,7 +456,7 @@ public class ContractorPersonalProfile extends Fragment {
 
                 int pft = 0;
                 for (int i = 0; i < frmtyp.size(); i++) {
-                    if (item.getFirm_registration_type().equals(frmtyp.get(i))) {
+                    if (item.getFirmRegistrationType().equals(frmtyp.get(i))) {
                         pft = i;
                     }
                 }
@@ -602,18 +549,7 @@ public class ContractorPersonalProfile extends Fragment {
 
                                     }
 
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                                            R.layout.spinner_model, wty);
 
-                                    work.setAdapter(adapter);
-
-                                    int cp = 0;
-                                    for (int i = 0; i < wty1.size(); i++) {
-                                        if (item.getWorkType().equals(wty1.get(i))) {
-                                            cp = i;
-                                        }
-                                    }
-                                    work.setSelection(cp);
 
                                 }
 
@@ -644,7 +580,7 @@ public class ContractorPersonalProfile extends Fragment {
 
                 int ep = 0;
                 for (int i = 0; i < est.size(); i++) {
-                    if (item.getEstablishment_year().equals(est.get(i))) {
+                    if (item.getEstablishmentYear().equals(est.get(i))) {
                         ep = i;
                     }
                 }

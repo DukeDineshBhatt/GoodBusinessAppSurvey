@@ -181,7 +181,7 @@ public interface AllApiIneterface {
 
 
     @Multipart
-    @POST("roshni/api/update_contractor.php")
+    @POST("roshni/api/update_contractor2.php")
     Call<verifyBean> update_contractor(
             @Part("user_id") String user_id,
             @Part("name") String name,

@@ -51,6 +51,7 @@ import com.app.goodbusinessappsurvey.contractorPOJO.contractorBean;
 import com.app.goodbusinessappsurvey.sectorPOJO.sectorBean;
 import com.app.goodbusinessappsurvey.verifyPOJO.Data;
 import com.app.goodbusinessappsurvey.verifyPOJO.verifyBean;
+import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -71,6 +72,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -80,6 +82,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
+import io.apptik.widget.multiselectspinner.BaseMultiSelectSpinner;
+import io.apptik.widget.multiselectspinner.MultiSelectSpinner;
 import mabbas007.tagsedittext.TagsEditText;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -96,9 +101,11 @@ import static android.app.Activity.RESULT_OK;
 
 public class contractor extends Fragment {
 
-    private Spinner gender, establishment, experience, work, availability, firm, proof, firmtype, sector;
+    private Spinner gender, establishment, experience, availability, firm, proof, firmtype, sector;
 
-    private String gend, sect, esta, expe, wtyp, avai, frmy, prf, frmytyp,lat,lng;
+    MultiSelectSpinner work;
+
+    private String gend, sect, esta, expe, wtyp, avai, frmy, prf, frmytyp;
 
     private EditText name, editTxtProof, reg_no, dob, business, cpin, cstate, cdistrict, carea, cstreet, ppin, pstate, pdistrict, parea, pstreet, home_based, employer, male, female, about;
 
@@ -130,6 +137,8 @@ public class contractor extends Fragment {
     private ProgressBar progress;
     private CustomViewPager pager;
     String id;
+
+    String lat = "" , lng = "";
 
     void setData(CustomViewPager pager) {
         this.pager = pager;
@@ -170,6 +179,10 @@ public class contractor extends Fragment {
                         if (location != null) {
                             // Logic to handle location object
                             mLastKnownLocation = location;
+
+                            lat = String.valueOf(mLastKnownLocation.getLatitude());
+                            lng = String.valueOf(mLastKnownLocation.getLongitude());
+
                             Log.d("location", String.valueOf(mLastKnownLocation.getLatitude()));
                         }
 
@@ -223,11 +236,9 @@ public class contractor extends Fragment {
 
         Log.d("ID", id);
 
-        gen.add("Select one --- ");
         gen.add("Male");
         gen.add("Female");
 
-        prof.add("Select one --- ");
         prof.add("Aadhaar Card");
         prof.add("Voter ID");
         prof.add("PAN Card");
@@ -235,7 +246,6 @@ public class contractor extends Fragment {
         prof.add("Passport");
         prof.add("Bank passbook");
 
-        est.add("Select one --- ");
         est.add("1970");
         est.add("1971");
         est.add("1972");
@@ -293,19 +303,17 @@ public class contractor extends Fragment {
         est.add("2024");
         est.add("2025");
 
-        exp.add("Select one --- ");
+
         exp.add("0 to 2 years");
         exp.add("3 to 5 years");
         exp.add("5 to 10 years");
         exp.add("more than 10 years");
 
 
-        ava.add("Select one --- ");
         ava.add("Available");
         ava.add("Within a Month");
         ava.add("Within Two Months");
 
-        frm.add("Select one --- ");
         frm.add("Sole-properietor");
         frm.add("Partnership");
         frm.add("Pvt.Ltd. Company");
@@ -315,7 +323,6 @@ public class contractor extends Fragment {
         frm.add("Co-operative");
         frm.add("Trust");
 
-        frmtyp.add("Select one --- ");
         frmtyp.add("SSI");
         frmtyp.add("MSME");
         frmtyp.add("Cottage Industry");
@@ -364,7 +371,7 @@ public class contractor extends Fragment {
         proof.setAdapter(adapter6);
         firmtype.setAdapter(adapter7);
 
-        cstate.setOnClickListener(new View.OnClickListener() {
+        /* cstate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -377,7 +384,7 @@ public class contractor extends Fragment {
                 startActivityForResult(intent, 11);
 
             }
-        });
+        });*/
 
         cdistrict.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -394,7 +401,7 @@ public class contractor extends Fragment {
             }
         });
 
-        pstate.setOnClickListener(new View.OnClickListener() {
+       /* pstate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -407,7 +414,7 @@ public class contractor extends Fragment {
                 startActivityForResult(intent, 13);
 
             }
-        });
+        });*/
 
         pdistrict.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,30 +431,12 @@ public class contractor extends Fragment {
             }
         });
 
-
-        work.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                wtyp = wty1.get(i);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     gend = gen.get(i);
-                } else {
-                    gend = "";
-                }
+
 
 
             }
@@ -462,15 +451,10 @@ public class contractor extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
 
                     prf = prof.get(i);
 
-                } else {
 
-                    prf = "";
-
-                }
 
             }
 
@@ -484,11 +468,8 @@ public class contractor extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     frmy = frm.get(i);
-                } else {
-                    frmy = "";
-                }
+
 
             }
 
@@ -502,11 +483,7 @@ public class contractor extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     frmytyp = frmtyp.get(i);
-                } else {
-                    frmytyp = "";
-                }
 
 
             }
@@ -520,11 +497,7 @@ public class contractor extends Fragment {
         establishment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
                     esta = est.get(i);
-                } else {
-                    esta = "";
-                }
 
 
             }
@@ -540,11 +513,7 @@ public class contractor extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     expe = exp.get(i);
-                } else {
-                    expe = "";
-                }
 
             }
 
@@ -559,11 +528,7 @@ public class contractor extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i > 0) {
                     avai = ava.get(i);
-                } else {
-                    avai = "";
-                }
 
             }
 
@@ -646,29 +611,33 @@ public class contractor extends Fragment {
             @Override
             public void onClick(View view) {
 
-                final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.dob_popup);
-                dialog.setCancelable(true);
-                dialog.show();
+                new SingleDateAndTimePickerDialog.Builder(getActivity())
+                        //.bottomSheet()
+                        .curved()
+                        .displayMinutes(false)
+                        .displayHours(false)
+                        .displayDays(false)
+                        .displayMonth(true)
+                        .displayYears(true)
+                        .displayDaysOfMonth(true)
+                        .listener(new SingleDateAndTimePickerDialog.Listener() {
+                            @Override
+                            public void onDateSelected(Date date) {
 
-                Button submit = dialog.findViewById(R.id.button11);
-                final DatePicker dp = dialog.findViewById(R.id.view14);
+                                //date.getTime();
 
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                                Date dt = new Date(date.getTime());
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                                String dd = sdf.format(dt);
 
-                        String dd = dp.getDayOfMonth() + "-" + (dp.getMonth() + 1) + "-" + dp.getYear();
 
-                        Log.d("dddd", dd);
+                                Log.d("dddd", dd);
 
-                        dob.setText(dd);
+                                dob.setText(dd);
 
-                        dialog.dismiss();
-
-                    }
-                });
+                            }
+                        })
+                        .display();
 
             }
         });
@@ -798,8 +767,8 @@ public class contractor extends Fragment {
                                                                                                         frmy,
                                                                                                         frmytyp,
                                                                                                         r,
-                                                                                                        String.valueOf(mLastKnownLocation.getLatitude()),
-                                                                                                        String.valueOf(mLastKnownLocation.getLongitude()),
+                                                                                                        lat,
+                                                                                                        lng,
                                                                                                         d,
                                                                                                         gend,
                                                                                                         b,
@@ -958,20 +927,39 @@ public class contractor extends Fragment {
 
             String ypath = getPath(getContext(), uri);
             assert ypath != null;
-            f1 = new File(ypath);
-
-            Log.d("path", ypath);
 
 
-            ImageLoader loader = ImageLoader.getInstance();
+            File file = null;
+            file = new File(ypath);
 
-            Bitmap bmp = loader.loadImageSync(String.valueOf(uri));
+            try {
+                f1 = new Compressor(getContext()).compressToFile(file);
 
-            Log.d("bitmap", String.valueOf(bmp));
+                uri = Uri.fromFile(f1);
 
-            image.setImageBitmap(bmp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("path1", ypath);
+
+            image.setImageURI(uri);
 
         } else if (requestCode == 1 && resultCode == RESULT_OK) {
+            Log.d("uri1", String.valueOf(uri));
+
+            try {
+
+                File file = new Compressor(getContext()).compressToFile(f1);
+
+                f1 = file;
+
+                uri = Uri.fromFile(f1);
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
             image.setImageURI(uri);
         }
         if (requestCode == 11) {
@@ -1227,8 +1215,8 @@ public class contractor extends Fragment {
                 lng = item.getLng();
 
                 name.setText(item.getName());
-                editTxtProof.setText(item.getId_number());
-                business.setText(item.getBusiness_name());
+                editTxtProof.setText(item.getIdNumber());
+                business.setText(item.getBusinessName());
                 cstreet.setText(item.getCstreet());
                 carea.setText(item.getCarea());
                 cdistrict.setText(item.getCdistrict());
@@ -1242,7 +1230,7 @@ public class contractor extends Fragment {
                 male.setText(item.getWorkersMale());
                 female.setText(item.getWorkersFemale());
 
-                reg_no.setText(item.getRegistration_no());
+                reg_no.setText(item.getRegistrationNo());
 
                 dob.setText(item.getDob());
                 home_based.setText(item.getHomeUnits());
@@ -1264,7 +1252,7 @@ public class contractor extends Fragment {
 
                 int fm = 0;
                 for (int i = 0; i < frm.size(); i++) {
-                    if (item.getFirm_type().equals(frm.get(i))) {
+                    if (item.getFirmType().equals(frm.get(i))) {
                         fm = i;
                     }
                 }
@@ -1272,7 +1260,7 @@ public class contractor extends Fragment {
 
                 int pf = 0;
                 for (int i = 0; i < prof.size(); i++) {
-                    if (item.getId_proof().equals(prof.get(i))) {
+                    if (item.getIdProof().equals(prof.get(i))) {
                         pf = i;
                     }
                 }
@@ -1280,7 +1268,7 @@ public class contractor extends Fragment {
 
                 int pft = 0;
                 for (int i = 0; i < frmtyp.size(); i++) {
-                    if (item.getFirm_registration_type().equals(frmtyp.get(i))) {
+                    if (item.getFirmRegistrationType().equals(frmtyp.get(i))) {
                         pft = i;
                     }
                 }
@@ -1356,18 +1344,49 @@ public class contractor extends Fragment {
 
                                     }
 
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                                            R.layout.spinner_model, wty);
 
-                                    work.setAdapter(adapter);
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                            android.R.layout.simple_list_item_multiple_choice, wty);
+
+
+
+                                    work.setListAdapter(adapter).setListener(new BaseMultiSelectSpinner.MultiSpinnerListener() {
+                                        @Override
+                                        public void onItemsSelected(boolean[] selected) {
+
+                                            wtyp = "";
+                                            List<String> sklist = new ArrayList<>();
+
+                                            for (int i = 0 ; i < selected.length ; i++)
+                                            {
+                                                if (selected[i])
+                                                {
+                                                    sklist.add(wty1.get(i));
+                                                }
+                                            }
+
+                                            wtyp = TextUtils.join(",", sklist);
+
+                                        }
+                                    });
+
+                                    String[] dd = item.getWorkTypeId().split(",");
 
                                     int cp = 0;
                                     for (int i = 0; i < wty1.size(); i++) {
-                                        if (item.getWorkType().equals(wty1.get(i))) {
-                                            cp = i;
+
+                                        for (int j = 0 ; j < dd.length ; j++)
+                                        {
+
+                                            if (dd[j].equals(wty1.get(i))) {
+                                                cp = i;
+                                                work.selectItem(i , true);
+                                            }
+
                                         }
+
+
                                     }
-                                    work.setSelection(cp);
 
                                 }
 
@@ -1415,7 +1434,7 @@ public class contractor extends Fragment {
 
                 int ep = 0;
                 for (int i = 0; i < est.size(); i++) {
-                    if (item.getEstablishment_year().equals(est.get(i))) {
+                    if (item.getEstablishmentYear().equals(est.get(i))) {
                         ep = i;
                     }
                 }

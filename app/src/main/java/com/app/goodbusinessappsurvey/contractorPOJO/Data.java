@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Data {
+
     @SerializedName("id")
     @Expose
     private String id;
@@ -13,6 +14,36 @@ public class Data {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("id_proof")
+    @Expose
+    private String idProof;
+    @SerializedName("id_number")
+    @Expose
+    private String idNumber;
+    @SerializedName("firm_type")
+    @Expose
+    private String firmType;
+    @SerializedName("firm_registration_type")
+    @Expose
+    private String firmRegistrationType;
+    @SerializedName("registration_no")
+    @Expose
+    private String registrationNo;
+    @SerializedName("lat")
+    @Expose
+    private String lat;
+    @SerializedName("lng")
+    @Expose
+    private String lng;
+    @SerializedName("phone")
+    @Expose
+    private String phone;
+    @SerializedName("business_name")
+    @Expose
+    private String businessName;
+    @SerializedName("establishment_year")
+    @Expose
+    private String establishmentYear;
     @SerializedName("photo")
     @Expose
     private String photo;
@@ -70,6 +101,9 @@ public class Data {
     @SerializedName("work_type")
     @Expose
     private String workType;
+    @SerializedName("work_type_id")
+    @Expose
+    private String workTypeId;
     @SerializedName("availability")
     @Expose
     private String availability;
@@ -79,52 +113,18 @@ public class Data {
     @SerializedName("about")
     @Expose
     private String about;
-    @SerializedName("created")
+    @SerializedName("reject_reason")
     @Expose
-    private String created;
-    @SerializedName("phone")
-    @Expose
-    private String phone;
-    @SerializedName("establishment_year")
-    @Expose
-    private String establishment_year;
-    @SerializedName("id_number")
-    @Expose
-    private String id_number;
-    @SerializedName("registration_no")
-    @Expose
-    private String registration_no;
-    @SerializedName("firm_type")
-    @Expose
-    private String firm_type;
-    @SerializedName("id_proof")
-    @Expose
-    private String id_proof;
-    @SerializedName("firm_registration_type")
-    @Expose
-    private String firm_registration_type;
+    private String rejectReason;
     @SerializedName("status")
     @Expose
     private String status;
-    @SerializedName("business_name")
-    @Expose
-    private String business_name;
-
     @SerializedName("sector")
     @Expose
     private String sector;
-
-    @SerializedName("reject_reason")
+    @SerializedName("created")
     @Expose
-    private String reject_reason;
-
-    @SerializedName("lat")
-    @Expose
-    private String lat;
-
-    @SerializedName("lng")
-    @Expose
-    private String lng;
+    private String created;
 
     public String getId() {
         return id;
@@ -148,6 +148,86 @@ public class Data {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIdProof() {
+        return idProof;
+    }
+
+    public void setIdProof(String idProof) {
+        this.idProof = idProof;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getFirmType() {
+        return firmType;
+    }
+
+    public void setFirmType(String firmType) {
+        this.firmType = firmType;
+    }
+
+    public String getFirmRegistrationType() {
+        return firmRegistrationType;
+    }
+
+    public void setFirmRegistrationType(String firmRegistrationType) {
+        this.firmRegistrationType = firmRegistrationType;
+    }
+
+    public String getRegistrationNo() {
+        return registrationNo;
+    }
+
+    public void setRegistrationNo(String registrationNo) {
+        this.registrationNo = registrationNo;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getEstablishmentYear() {
+        return establishmentYear;
+    }
+
+    public void setEstablishmentYear(String establishmentYear) {
+        this.establishmentYear = establishmentYear;
     }
 
     public String getPhoto() {
@@ -302,6 +382,14 @@ public class Data {
         this.workType = workType;
     }
 
+    public String getWorkTypeId() {
+        return workTypeId;
+    }
+
+    public void setWorkTypeId(String workTypeId) {
+        this.workTypeId = workTypeId;
+    }
+
     public String getAvailability() {
         return availability;
     }
@@ -326,68 +414,12 @@ public class Data {
         this.about = about;
     }
 
-    public String getCreated() {
-        return created;
+    public String getRejectReason() {
+        return rejectReason;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEstablishment_year() {
-        return establishment_year;
-    }
-
-    public void setEstablishment_year(String establishment_year) {
-        this.establishment_year = establishment_year;
-    }
-
-    public String getId_number() {
-        return id_number;
-    }
-
-    public void setId_number(String id_number) {
-        this.id_number = id_number;
-    }
-
-    public String getRegistration_no() {
-        return registration_no;
-    }
-
-    public void setRegistration_no(String registration_no) {
-        this.registration_no = registration_no;
-    }
-
-    public String getFirm_type() {
-        return firm_type;
-    }
-
-    public void setFirm_type(String firm_type) {
-        this.firm_type = firm_type;
-    }
-
-    public String getId_proof() {
-        return id_proof;
-    }
-
-    public void setId_proof(String id_proof) {
-        this.id_proof = id_proof;
-    }
-
-    public String getFirm_registration_type() {
-        return firm_registration_type;
-    }
-
-    public void setFirm_registration_type(String firm_registration_type) {
-        this.firm_registration_type = firm_registration_type;
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 
     public String getStatus() {
@@ -398,14 +430,6 @@ public class Data {
         this.status = status;
     }
 
-    public String getBusiness_name() {
-        return business_name;
-    }
-
-    public void setBusiness_name(String business_name) {
-        this.business_name = business_name;
-    }
-
     public String getSector() {
         return sector;
     }
@@ -414,27 +438,12 @@ public class Data {
         this.sector = sector;
     }
 
-    public String getReject_reason() {
-        return reject_reason;
+    public String getCreated() {
+        return created;
     }
 
-    public void setReject_reason(String reject_reason) {
-        this.reject_reason = reject_reason;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
-    public String getLat() {
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public String getLng() {
-        return lng;
-    }
-
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
 }
